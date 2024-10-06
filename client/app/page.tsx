@@ -29,11 +29,8 @@ const Page: FC<Props> = (props) => {
 
       <Hero />
 
-      {/* <Footer
-        activeItem={activeItem}
-        isMobile={false} // or use a state to detect mobile if needed
-        onNavItemClick={(item) => console.log(item)} // You can define a function to handle the navigation
-      /> */}
+      <Footer/>
+
     </div>
   );
 };

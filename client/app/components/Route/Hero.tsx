@@ -7,7 +7,7 @@ type Props = {};
 
 const Hero: FC<Props> = (props) => {
   return (
-    <div className="w-full h-screen flex items-center justify-center">
+    <div className="w-full h-[80vh] flex items-center justify-center">
   <div className="relative w-full max-w-[600px]">
     <input
       type="search"
