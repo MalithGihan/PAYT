@@ -5,11 +5,11 @@ interface ProtectedProps {
   children: React.ReactNode;
 }
 
-export default function AdminProtected({ children }: ProtectedProps) {
+export default function DriverProtected({ children }: ProtectedProps) {
   const { user } = useSelector((state: any) => state.auth);
 
   if (user) {
-    const isAdmin = user?.role === "admin";
+    const isAdmin = user?.role === "driver";
 
     return isAdmin ? children : redirect("/");
   }

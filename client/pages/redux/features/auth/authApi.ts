@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
 
@@ -28,8 +27,12 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.activationToken,
             })
           );
-        } catch (error: any) {
-          console.log(error);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.log(error.message);
+          } else {
+            console.log("An unexpected error occurred.");
+          }
         }
       },
     }),
@@ -62,8 +65,12 @@ export const authApi = apiSlice.injectEndpoints({
               user: result.data.user,
             })
           );
-        } catch (error: any) {
-          console.log(error);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.log(error.message);
+          } else {
+            console.log("An unexpected error occurred.");
+          }
         }
       },
     }),
@@ -87,8 +94,12 @@ export const authApi = apiSlice.injectEndpoints({
               user: result.data.user,
             })
           );
-        } catch (error: any) {
-          console.log(error);
+        } catch (error:unknown) {
+          if (error instanceof Error) {
+            console.log(error.message);
+          } else {
+            console.log("An unexpected error occurred.");
+          }
         }
       },
     }),
@@ -101,8 +112,12 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           dispatch(userLoggedOut());
-        } catch (error: any) {
-          console.log(error);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.log(error.message);
+          } else {
+            console.log("An unexpected error occurred.");
+          }
         }
       },
     }),
