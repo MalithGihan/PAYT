@@ -19,8 +19,8 @@ const Page: FC<Props> = (props) => {
   return (
     <div>
       <Heading
-        title="Elearning"
-        description=" Elaeaning is dun to learn"
+        title="PAYT"
+        description="Garbage Collecting System"
         keywords="MERN,HTML,JAVA"
       />
       <Header

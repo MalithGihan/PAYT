@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import Image from "next/image";
 import avatarDefault from "../../../public/assests/avatar.png";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { SiCoursera } from "react-icons/si";
+import { FaPaperPlane } from "react-icons/fa";
 import { FaTrashRestore } from "react-icons/fa";
 import { AiOutlineLogout } from "react-icons/ai";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
@@ -48,12 +48,12 @@ const SlideBarProfile: FC<Props> = ({
         }`}
         onClick={() => setActive(2)}
       >
-        <RiLockPasswordLine size={20} className="text-black dark:text-white" /> 
+        <RiLockPasswordLine size={20} className="text-black dark:text-white" />
         <h5 className="pl-4 font-Poppins dark:text-white text-black font-medium">
           Change Password
         </h5>
       </div>
-      {user.role !== "admin" && (
+      {user.role == "user" && (
         <div
           className={`w-full flex items-center px-3 py-4 cursor-pointer ${
             active === 3 ? "dark:bg-slate-800 bg-white" : "bg-transparent"
@@ -67,6 +67,20 @@ const SlideBarProfile: FC<Props> = ({
         </div>
       )}
 
+      {user.role == "driver" && (
+        <div
+          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
+            active === 6 ? "dark:bg-slate-800 bg-white" : "bg-transparent"
+          }`}
+          onClick={() => setActive(6)}
+        >
+          <FaPaperPlane size={20} className="text-black dark:text-white" />
+          <h5 className="pl-4 font-Poppins dark:text-white text-black font-medium">
+            Schedules
+          </h5>
+        </div>
+      )}
+
       {user.role === "admin" && (
         <Link
           className={`w-full flex items-center px-3 py-4 cursor-pointer ${
@@ -74,7 +88,10 @@ const SlideBarProfile: FC<Props> = ({
           }`}
           href="/admin"
         >
-          <MdOutlineAdminPanelSettings size={20} className="text-black dark:text-white" />
+          <MdOutlineAdminPanelSettings
+            size={20}
+            className="text-black dark:text-white"
+          />
           <h5 className="pl-4 font-Poppins dark:text-white text-black font-medium">
             Admin Dashboard
           </h5>

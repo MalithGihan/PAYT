@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import Activities from "../User/Activities";
+import Schedules from "../Driver/Schedules";
 
 type Props = {
   user: any;
@@ -60,14 +61,20 @@ const Profile: FC<Props> = ({ user }) => {
       )}
 
       {active === 2 && (
-        <div className="w-full h-full bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 px-5 mb-10">
+        <div className="w-full h-[75vh] bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 px-5 mb-10">
           <ChangePassword />
         </div>
       )}
 
       {active === 3 && (
-        <div className="w-full h-full bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 p-5 mb-7">
+        <div className="w-full h-[75vh] bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 p-5 mb-7">
           <Activities />
+        </div>
+      )}
+
+      {active === 6 && (
+        <div className="w-full h-[75vh] bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 p-5 mb-7">
+          <Schedules />
         </div>
       )}
     </div>
