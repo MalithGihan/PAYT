@@ -36,7 +36,7 @@ const ChangePassword: FC<Props> = (props) => {
 
   return (
     <div className="w-full pl-7 px-2 800px:px-5 800px:pl-0">
-      <h1 className="block text-[25px] font-Poppins text-center font-[500] dark:text-[#fff] text-black pb-2">
+      <h1 className="block text-[25px] font-Poppins text-center font-[500] dark:text-[#fff] text-black pb-2 mt-5">
         Change Password
       </h1>
       <div className="w-full p-5">
@@ -46,7 +46,7 @@ const ChangePassword: FC<Props> = (props) => {
           className="flex flex-col items-center"
         >
           <div className="w-[100%] 00px:w-[60%] mt-5">
-            <label className="block pb-2 text-black dark:text-[#fff]">
+            <label className="block pb-2 text-black dark:text-[#fff] font-medium text-[15px]">
               Enter Your old password
             </label>
             <input
@@ -58,7 +58,7 @@ const ChangePassword: FC<Props> = (props) => {
             />
           </div>
           <div className="w-[100%] 00px:w-[60%] mt-5">
-            <label className="block pb-2 text-black dark:text-[#fff]">
+            <label className="block pb-2 text-black dark:text-[#fff] font-medium text-[15px]">
               Enter Your new password
             </label>
             <input
@@ -70,7 +70,7 @@ const ChangePassword: FC<Props> = (props) => {
             />
           </div>
           <div className="w-[100%] 00px:w-[60%] mt-5">
-            <label className="block pb-2 text-black dark:text-[#fff]">
+            <label className="block pb-2 text-black dark:text-[#fff] font-medium text-[15px]">
               Enter Your confirm password
             </label>
             <input
@@ -84,7 +84,7 @@ const ChangePassword: FC<Props> = (props) => {
           <div className="w-[100%] 00px:w-[60%] mt-5">
             <input
               type="submit"
-              className={`w-full h-[40px] border border-[#37a39a] text-center text-black dark:text-[#fff] rounded-[3px] mt-8 cursor-pointer`}
+              className={`!w-[95%] h-[40px] border border-[#37a39a] text-center text-black dark:text-[#fff] rounded-[3px] mt-4 mb-5 cursor-pointer`}
               value="Update"
             />
           </div>

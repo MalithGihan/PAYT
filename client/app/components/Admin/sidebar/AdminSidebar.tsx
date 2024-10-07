@@ -112,21 +112,21 @@ const Sidebar = () => {
             {!isCollapsed && (
               <Box
                 display="flex"
-                justifyContent="space-between"
+                justifyContent="flex-start"
                 alignItems="center"
                 ml="15px"
               >
-                <Link href="/">
-                  <h3 className="text-[25px] font-Poppins uppercase dark:text-white text-black">
-                    Course.com
-                  </h3>
-                </Link>
                 <IconButton
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="inline-block"
                 >
-                  <ArrowBackIosIcon className="text-black dark:text-[#ffffffc1]" />
+                  <ArrowBackIosIcon className="text-[#588157] dark:text-white" />
                 </IconButton>
+                <Link href="/">
+                  <h3 className="text-[20px] font-medium font-Poppins uppercase text-[#588157] dark:text-white">
+                    PAYT
+                  </h3>
+                </Link>
               </Box>
             )}
           </MenuItem>
@@ -194,7 +194,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-<Typography
+            <Typography
               variant="h5"
               sx={{ m: "15px 0 5px 25px" }}
               className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
@@ -311,7 +311,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
           </Box>
         </Menu>
       </ProSidebar>

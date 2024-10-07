@@ -2,9 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  AiOutlineEye,
   AiOutlineEyeInvisible,
-  AiFillGithub,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { styles } from "../../../app/styles/style";
@@ -27,31 +25,30 @@ const SignUp: FC<Props> = ({ setRoute }) => {
   const [show, setShow] = useState(false);
   const [register,{data,error,isSuccess}] = useRegisterMutation()
 
-
-
   useEffect(() => {
-      if(isSuccess){
-        const message = data?.message || "Registration Successful"
-        toast.success(message)
-        setRoute("Verification")
-        console.log("Testing")
+    if (isSuccess) {
+      toast.success(data?.message || "Registration Successful");
+      setRoute("Verification");
+    }
+    if (error) {
+      
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+      } else {
+        toast.error("Something went wrong. Please try again later.");
       }
-      if(error){
-        if("data" in error){
-          const errorData = error as any
-          toast.error(errorData.data.message)
-        }
-      }
-  },[isSuccess, error, data?.message, setRoute]);
+    }
+  }, [isSuccess, error, data, setRoute]);
 
   const formik = useFormik({
-    initialValues: { name: "", email: "", password: "" },
+    initialValues: { name: "", email: "", password: "",houseOwnerName:"", address:"" },
     validationSchema: schema,
-    onSubmit: async ({ name,email, password }) => {
+    onSubmit: async ({name, email, password,houseOwnerName,address }) => {
       const data = {
-        name,email,password
+        name, email, password,houseOwnerName,address
       }
-      await register(data)
+      await register(data);
     },
   });
 
@@ -59,7 +56,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
 
   return (
     <div className="w-full">
-      <h1 className={`${styles.title}`}>Join to ELearning</h1>
+      <h1 className={`${styles.title}`}>Join to PAYT</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className={`${styles.label}`} htmlFor="email">
@@ -67,7 +64,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
           </label>
           <input
             type="text"
-            name=""
+            name="name"
             value={values.name}
             onChange={handleChange}
             id="name"
@@ -80,12 +77,50 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             <span className="text-red-500 pt-2 block">{errors.name}</span>
           )}
         </div>
+        <div className="mb-3">
+          <label className={`${styles.label}`} htmlFor="houseOwnerName">
+            Enter house owner address
+          </label>
+          <input
+            type="text"
+            name="houseOwnerName"
+            value={values.houseOwnerName}
+            onChange={handleChange}
+            id="name"
+            placeholder="Malith"
+            className={`${errors.houseOwnerName && touched.houseOwnerName && "border-red-500"} ${
+              styles.input
+            }`}
+          />
+          {errors.houseOwnerName && touched.houseOwnerName && (
+            <span className="text-red-500 pt-2 block">{errors.houseOwnerName}</span>
+          )}
+        </div>
+        <div className="mb-3">
+          <label className={`${styles.label}`} htmlFor="address">
+            Enter your name
+          </label>
+          <input
+            type="text"
+            name="address"
+            value={values.address}
+            onChange={handleChange}
+            id="name"
+            placeholder="No/90, Lakman Uyana, Maharagama"
+            className={`${errors.address && touched.address && "border-red-500"} ${
+              styles.input
+            }`}
+          />
+          {errors.address && touched.address && (
+            <span className="text-red-500 pt-2 block">{errors.address}</span>
+          )}
+        </div>
         <label className={`${styles.label}`} htmlFor="email">
           Enter your email
         </label>
         <input
           type="email"
-          name=""
+          name="email"
           value={values.email}
           onChange={handleChange}
           id="email"
@@ -97,7 +132,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
         {errors.email && touched.email && (
           <span className="text-red-500 pt-2 block">{errors.email}</span>
         )}
-        <div className="w-full mt-5 relative mb-1">
+        <div className="w-full mt-4 relative mb-1">
           <label className={`${styles.label}`} htmlFor="email">
             Enter your password
           </label>
@@ -114,13 +149,13 @@ const SignUp: FC<Props> = ({ setRoute }) => {
           />
           {!show ? (
             <AiOutlineEyeInvisible
-              className="absolute bottom-3 right-2 z-1 cursor-pointer"
+              className="absolute bottom-2 right-2 z-1 cursor-pointer"
               size={20}
               onClick={() => setShow(true)}
             />
           ) : (
             <AiOutlineEyeInvisible
-              className="absolute bottom-3 right-2 z-1 cursor-pointer"
+              className="absolute bottom-2 right-2 z-1 cursor-pointer"
               size={20}
               onClick={() => setShow(false)}
             />
@@ -130,18 +165,18 @@ const SignUp: FC<Props> = ({ setRoute }) => {
           <span className="text-red-500 pt-2 block">{errors.password}</span>
         )}
 
-        <div className="w-full mt-5">
+        <div className="w-full mt-8">
           <input type="submit" value="Sign Up" className={`${styles.button}`} />
         </div>
         <br />
-        <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
+        <h5 className="text-center pt-2 font-Poppins text-[14px] text-black dark:text-white">
           Or join with
         </h5>
         <div className="flex items-center justify-center my-3">
           <FcGoogle size={30} className="cursor-pointer mr-2" />
-          <AiFillGithub size={30} className="cursor-pointer mr-2" />
+          
         </div>
-        <h5 className="text-center pt-4 font-Poppins text-[14px]">
+        <h5 className="text-center pt-3 font-Poppins text-[14px] text-black dark:text-white">
           Already have an account ?{" "}
           <span
             className="text-[#2190ff] pl-1 cursor-pointer"

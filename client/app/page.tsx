@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useState } from "react";
+import React, { FC, useState,useEffect } from "react";
 import Heading from "./utils/Heading";
 import Header from "./components/Header";
 import Hero from "./components/Route/Hero";
@@ -12,11 +12,15 @@ const Page: FC<Props> = (props) => {
   const [activeItem, setActiveItem] = useState(0);
   const [route, setRoute] = useState("Login");
 
+  useEffect(() => {
+    // Any browser-specific logic or re-render logic can be here
+  }, []);
+
   return (
     <div>
       <Heading
-        title="Elearning"
-        description=" Elaeaning is dun to learn"
+        title="PAYT"
+        description="Garbage Collecting System"
         keywords="MERN,HTML,JAVA"
       />
       <Header
@@ -29,11 +33,8 @@ const Page: FC<Props> = (props) => {
 
       <Hero />
 
-      {/* <Footer
-        activeItem={activeItem}
-        isMobile={false} // or use a state to detect mobile if needed
-        onNavItemClick={(item) => console.log(item)} // You can define a function to handle the navigation
-      /> */}
+      <Footer/>
+
     </div>
   );
 };

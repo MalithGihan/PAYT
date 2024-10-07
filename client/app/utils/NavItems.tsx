@@ -25,8 +25,8 @@ export const navItemsData = [
 ];
 
 type Props = {
-  activeItem: number;
-  isMobile: boolean;
+  activeItem?: number;
+  isMobile?: boolean;
 };
 
 const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {

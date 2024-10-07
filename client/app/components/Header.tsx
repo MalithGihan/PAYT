@@ -110,7 +110,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                     alt="User Avatar"
                     width={30}
                     height={30}
-                    className="hidden md:block w-[30px] h-[30px] rounded-full cursor-pointer"
+                    className="hidden md:block w-[30px] h-[30px] rounded-full cursor-pointer ml-6"
                     style={{
                       border: activeItem === 5 ? "2px solid #37a39a" : "none",
                     }}
@@ -119,7 +119,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
               ) : (
                 <HiOutlineUserCircle
                   size={25}
-                  className="hidden md:block cursor-pointer ml-5 my-2 text-black dark:text-white"
+                  className="hidden md:block cursor-pointer ml-6 my-2 text-black dark:text-white"
                   onClick={() => setOpen(true)}
                 />
               )}
@@ -138,7 +138,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
               <NavItems activeItem={activeItem} isMobile={true} />
               <HiOutlineUserCircle
                 size={25}
-                className="cursor-pointer ml-5 my-2 text-black dark:text-white"
+                className="cursor-pointer mt-4 ml-5 my-2 text-black dark:text-white"
                 onClick={() => setOpen(true)}
               />
               <br />

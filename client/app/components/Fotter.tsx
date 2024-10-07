@@ -8,19 +8,52 @@ type Props = {
   onNavItemClick?: (item: string) => void;
 };
 
-
-const Footer: FC<Props> = ({ }) => {
+const Footer: FC<Props> = () => {
   return (
     <footer className="w-full relative bg-[#2d6a4f] dark:bg-black py-10">
       <div className="max-w-[1200px] mx-auto px-5">
         {/* Footer content */}
-        <div className="flex justify-between items-center">
-          <div className="flex justify-between gap-20">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div className="flex flex-col md:flex-row gap-10 md:gap-20 mb-10 md:mb-0">
             <div className="text-white">
-              <h3 className="text-[18px] font-Poppins font-[500] mb-2">
-                Quick Links
-              </h3>
-              {/* <NavItems activeItem={activeItem} isMobile={isMobile} onNavItemClick={onNavItemClick} /> */}
+              <h3 className="text-[18px] font-Poppins font-[500] mb-2">Quick Links</h3>
+              <ul className="flex flex-col space-y-2">
+                <li>
+                  <Link href="/waste-collection-scheduling" passHref>
+                    <p className="text-[15px] hover:text-[#37a39a] cursor-pointer">
+                      Home
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/waste-segregation-support" passHref>
+                    <p className="text-[15px] hover:text-[#37a39a] cursor-pointer">
+                      Services
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/recycling-programs" passHref>
+                    <p className="text-[15px] hover:text-[#37a39a] cursor-pointer">
+                     About
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/hazardous-waste-disposal" passHref>
+                    <p className="text-[15px] hover:text-[#37a39a] cursor-pointer">
+                     Policy
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/hazardous-waste-disposal" passHref>
+                    <p className="text-[15px] hover:text-[#37a39a] cursor-pointer">
+                     FAQ
+                    </p>
+                  </Link>
+                </li>
+                </ul>
             </div>
 
             <div className="text-white">
@@ -113,7 +146,7 @@ const Footer: FC<Props> = ({ }) => {
             </div>
           </div>
 
-          <div className="text-white">
+          <div className="text-white mb-10 md:mb-0">
             <h3 className="text-[18px] font-Poppins font-[500] mb-2">Stay Connected</h3>
             <p className="text-[14px]">Follow us on social media for updates!</p>
           </div>
