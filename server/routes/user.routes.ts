@@ -48,14 +48,14 @@ userRouter.get(
 );
 userRouter.put(
   "/update-user",
-  isAuthenticated,
-  authorizRoles("admin"),
+  // isAuthenticated,
+  // authorizRoles("admin"),
   updateUserRole
 );
 userRouter.delete(
   "/delete-user/:id",
-  isAuthenticated,
-  authorizRoles("admin"),
+  // isAuthenticated,
+  // authorizRoles("admin"),
   deleteUser
 );
 

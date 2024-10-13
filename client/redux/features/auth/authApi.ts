@@ -106,6 +106,51 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    getUsers: builder.query({
+      query: () => ({
+        url: "get-users",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          console.log(result.data);
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+    }),
+    updateUserRole: builder.mutation({
+      query: (userData) => ({
+        url: '/update-user',
+        method: 'PUT',
+        body: userData,
+      }),
+      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(authApi.util.invalidateTags(['User']));
+        } catch (error) {
+          console.error('Error updating user role:', error);
+        }
+      },
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/delete-user/${id}`,
+        method: 'DELETE',
+      }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(authApi.util.invalidateTags(['User']));
+        } catch (error) {
+          console.error('Error deleting user:', error);
+        }
+      },
+    }),
+
   }),
 });
 
@@ -114,5 +159,8 @@ export const {
   useActivationMutation,
   useLoginMutation,
   useSocialAuthMutation,
-  useLogOutQuery
+  useLogOutQuery,
+  useGetUsersQuery,
+  useUpdateUserRoleMutation,
+  useDeleteUserMutation
 } = authApi;
