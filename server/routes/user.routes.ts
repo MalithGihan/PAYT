@@ -27,6 +27,12 @@ import {
   updateComplaint,
   deleteComplaint,
 } from "../controllers/complaint.controller";
+import {
+  createBin,
+  getBins,
+  updateBin,
+  deleteBin,
+} from "../controllers/bin.controller";
 
 const userRouter = express.Router();
 
@@ -60,15 +66,25 @@ userRouter.delete(
 );
 
 
-userRouter.post("/create-req", isAuthenticated, createRequest); 
-userRouter.get("/get-reqs", isAuthenticated, getRequests); 
-userRouter.put("/update-req/:requestId", isAuthenticated, updateRequest); 
+userRouter.post("/create-req", isAuthenticated, createRequest);
+userRouter.get("/get-reqs",
+  isAuthenticated,
+  getRequests);
+userRouter.put("/update-req/:requestId",
+  // isAuthenticated, 
+  updateRequest);
 userRouter.delete("/del-req/:requestId", isAuthenticated, deleteRequest);
 
-userRouter.post("/create-compl", isAuthenticated, createComplaint); 
-userRouter.get("/get-compls", isAuthenticated, getComplaints); 
-userRouter.put("/update-compl/:complaintId", isAuthenticated, updateComplaint); 
-userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint); 
+userRouter.post("/create-compl", isAuthenticated, createComplaint);
+userRouter.get("/get-compls", isAuthenticated, getComplaints);
+userRouter.put("/update-compl/:complaintId", isAuthenticated, updateComplaint);
+userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint);
+
+
+userRouter.post("/create-bin", isAuthenticated, createBin);
+userRouter.get("/get-bins", isAuthenticated, getBins);
+userRouter.put("/update-bin/:binId", isAuthenticated, updateBin);
+userRouter.delete("/del-bin/:binId", isAuthenticated, deleteBin);
 
 
 export default userRouter;

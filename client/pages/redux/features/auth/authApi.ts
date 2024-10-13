@@ -10,6 +10,15 @@ type RegistrationResponse = {
 
 type RegistrationDate = {};
 
+type Request = {
+  _id: string;
+  userId: string;
+  status: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<RegistrationResponse, RegistrationDate>({
@@ -165,7 +174,21 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    getRequests: builder.query<{ success: boolean; requests: Request[] }, void>({
+      query: () => ({
+        url: "/get-reqs",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
 
+    updateRequest: builder.mutation({
+      query: ({ requestId, updates }) => ({
+        url: `/update-req/${requestId}`,
+        method: 'PUT',
+        body: updates,
+      }),
+    }),
   }),
 });
 
@@ -177,5 +200,7 @@ export const {
   useLogOutQuery,
   useGetUsersQuery,
   useUpdateUserRoleMutation,
-  useDeleteUserMutation
+  useDeleteUserMutation,
+  useGetRequestsQuery ,
+  useUpdateRequestMutation 
 } = authApi;
