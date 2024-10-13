@@ -19,6 +19,21 @@ type Request = {
   updatedAt: string;
 };
 
+type Bins = {
+  _id: string;
+  userId: string;
+  location: string;
+  size: string;
+  isCollected: boolean;
+  createdAt: string;
+};
+
+type BinsResponse = {
+  success: boolean;
+  bins: Bins[];
+};
+
+
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<RegistrationResponse, RegistrationDate>({
@@ -189,6 +204,53 @@ export const authApi = apiSlice.injectEndpoints({
         body: updates,
       }),
     }),
+    getBins: builder.query<{ success: boolean; bins: Bins[] }, void>({
+      query: () => ({
+        url: '/get-bins',
+        method: 'GET',
+        credentials: "include" as const,
+      }),
+    }),
+    createBin: builder.mutation({
+      query: (newBinData) => ({
+        url: '/create-bin',
+        method: 'POST',
+        body: newBinData,
+      }),
+    }),
+
+    // 2. Update an existing bin
+    updateBin: builder.mutation({
+      query: ({ binId, updatedBinData }) => ({
+        url: `/update-bin/${binId}`,
+        method: 'PUT',
+        body: updatedBinData,
+      }),
+    }),
+
+    // 3. Delete a bin
+    deleteBin: builder.mutation({
+      query: (binId) => ({
+        url: `/del-bin/${binId}`,
+        method: 'DELETE',
+      }),
+    }),
+    getBinsById: builder.query<BinsResponse, string>({
+      query: (userId) => ({
+        url: `/get-bins/${userId}`,
+        method: 'GET',
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log(data.bins);
+        } catch (error: any) {
+          console.error("Error fetching bins by user ID:", error);
+          toast.error("Failed to fetch bins.");
+        }
+      },
+    }),
   }),
 });
 
@@ -201,6 +263,11 @@ export const {
   useGetUsersQuery,
   useUpdateUserRoleMutation,
   useDeleteUserMutation,
-  useGetRequestsQuery ,
-  useUpdateRequestMutation 
+  useGetRequestsQuery,
+  useUpdateRequestMutation,
+  useGetBinsQuery,
+  useCreateBinMutation,
+  useUpdateBinMutation,
+  useDeleteBinMutation,
+  useGetBinsByIdQuery
 } = authApi;

@@ -30,6 +30,7 @@ import {
 import {
   createBin,
   getBins,
+  getBinsbyid,
   updateBin,
   deleteBin,
 } from "../controllers/bin.controller";
@@ -81,10 +82,18 @@ userRouter.put("/update-compl/:complaintId", isAuthenticated, updateComplaint);
 userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint);
 
 
-userRouter.post("/create-bin", isAuthenticated, createBin);
+userRouter.post("/create-bin", 
+  // isAuthenticated, 
+  createBin);
 userRouter.get("/get-bins", isAuthenticated, getBins);
-userRouter.put("/update-bin/:binId", isAuthenticated, updateBin);
-userRouter.delete("/del-bin/:binId", isAuthenticated, deleteBin);
+userRouter.get("/get-bins/:userId", isAuthenticated, getBinsbyid);
+
+userRouter.put("/update-bin/:binId",
+  //  isAuthenticated,
+    updateBin);
+userRouter.delete("/del-bin/:binId", 
+  // isAuthenticated, 
+  deleteBin);
 
 
 export default userRouter;
