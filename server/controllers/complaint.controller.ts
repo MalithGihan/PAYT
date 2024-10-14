@@ -15,7 +15,7 @@ export const createComplaint = CatchAsyncError(async (req: Request, res: Respons
 });
 
 export const getComplaints = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?._id as string;
+  const { userId } = req.body;
   const complaints = await ComplaintModel.find({ userId });
 
   res.status(200).json({

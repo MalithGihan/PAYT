@@ -80,7 +80,9 @@ userRouter.put("/update-req/:requestId",
 userRouter.delete("/del-req/:requestId", isAuthenticated, deleteRequest);
 
 userRouter.post("/create-compl", isAuthenticated, createComplaint);
-userRouter.get("/get-compls", isAuthenticated, getComplaints);
+userRouter.get("/get-compls/:userId", 
+  // isAuthenticated,
+   getComplaints);
 userRouter.get("/get-All-compls", isAuthenticated, getAllComplaints);
 userRouter.put("/update-compl/:complaintId",
   // isAuthenticated,

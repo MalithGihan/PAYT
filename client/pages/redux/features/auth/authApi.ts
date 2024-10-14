@@ -323,6 +323,23 @@ export const authApi = apiSlice.injectEndpoints({
       }),
     }),
 
+    createComplaint: builder.mutation<{ success: boolean; complaint: any }, { message: string }>({
+      query: (data) => ({
+        url: '/create-compl', 
+        method: 'POST',
+        body: data, 
+        credentials: "include", 
+      }),
+      invalidatesTags: ['Complaint'], 
+    }),
+    getComplaints: builder.query({
+      query: (userId: string) => ({
+        url: `/get-compls/${userId}`,
+        method: 'GET',
+      }),
+    }),
+    
+
   }),
 });
 
@@ -345,5 +362,7 @@ export const {
   useUpdateBinStatusMutation,
   useGetBinStatusReportQuery,
   useGetAllComplaintsQuery,
-  useUpdateComplaintMutation
+  useUpdateComplaintMutation,
+  useCreateComplaintMutation ,
+  useGetComplaintsQuery 
 } = authApi;

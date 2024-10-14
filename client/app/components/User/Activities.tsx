@@ -1,5 +1,8 @@
 import React from 'react';
 import { FaTrashAlt, FaRecycle, FaTruck } from 'react-icons/fa';
+import ComplaintsCreate from './ComplaintsCreate';
+import ViewComplaints from './ViewComplaints';
+
 
 const Activities = () => {
   const activities = [
@@ -39,6 +42,8 @@ const Activities = () => {
             <p className="text-gray-700 text-center">{activity.description}</p>
           </div>
         ))}
+        <ComplaintsCreate/>
+        <ViewComplaints/>
       </div>
     </div>
   );
