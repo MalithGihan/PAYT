@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
 
@@ -28,6 +27,7 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.activationToken,
             })
           );
+          
         } catch (error: any) {
           console.log(error);
         }

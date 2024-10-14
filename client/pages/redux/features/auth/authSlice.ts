@@ -1,30 +1,76 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { userLoggedIn } from "../auth/authSlice";
 
-const initialState = {
-  token: "",
-  user: "",
-};
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    userRegistration: (state, action: PayloadAction<{token:string}>) => {
-      state.token = action.payload.token;
-      
-    },
-    userLoggedIn: (state, action: PayloadAction<{accessToken:string,user:string}>) => {
-      state.token = action.payload.accessToken;
-      state.user = action.payload.user;
-    },
-    userLoggedOut: (state) => {
-      state.token = "";
-      state.user = "";
-    },
-  },
+export const apiSlice = createApi({
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
+  }),
+  endpoints: (builder) => ({
+    refreshToken: builder.query({
+      query: (data) => ({
+        url: "refresh",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
+    loadUser: builder.query({
+      query: (data) => ({
+        url: "me",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(
+            userLoggedIn({
+              accessToken: result.data.activationToken,
+              user: result.data.user,
+            })
+          );
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+    }),
+  }),
 });
 
-export const { userRegistration, userLoggedIn, userLoggedOut } =
-  authSlice.actions;
+export const { useRefreshTokenQuery, useLoadUserQuery } = apiSlice;
 
-export default authSlice.reducer
+// Injected notification API
+export const notificationApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    createNotification: builder.mutation({
+      query: (data) => ({
+        url: "add-notifications",
+        method: "POST",
+        body: data,
+        credentials: "include" as const,
+      }),
+    }),
+    fetchUnreadNotifications: builder.query({
+      query: () => ({
+        url: "/notifications", 
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
+    markNotificationAsRead: builder.mutation({
+      query: (notificationId) => ({
+        url: `/notifications/${notificationId}`,
+        method: "PUT",
+        credentials: "include" as const,
+      }),
+    }),
+  }),
+});
+
+// Export the hooks for notifications
+export const {
+  useCreateNotificationMutation,
+  useFetchUnreadNotificationsQuery,
+  useMarkNotificationAsReadMutation,
+} = notificationApi;
