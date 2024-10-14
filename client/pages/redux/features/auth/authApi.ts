@@ -1,6 +1,6 @@
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
-
+import toast from 'react-hot-toast'
 //Artical Quary
 
 type RegistrationResponse = {
@@ -232,7 +232,6 @@ export const authApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    // 2. Update an existing bin
     updateBin: builder.mutation({
       query: ({ binId, updatedBinData }) => ({
         url: `/update-bin/${binId}`,
@@ -241,7 +240,6 @@ export const authApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    // 3. Delete a bin
     deleteBin: builder.mutation({
       query: (binId) => ({
         url: `/del-bin/${binId}`,
@@ -275,7 +273,7 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           toast.success(data.message);
-          // Optionally, you can update the cache here if needed
+
           dispatch(authApi.util.invalidateTags(['Bin']));
         } catch (error) {
           console.error('Error updating bin status:', error);
@@ -301,6 +299,30 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    getAllComplaints: builder.query({
+      query: () => ({
+        url: "/get-All-compls",
+        method: "GET",
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log('Complaints fetched:', data.complaints);
+        } catch (error) {
+          console.error('Error fetching complaints:', error);
+        }
+      },
+    }),
+
+    updateComplaint: builder.mutation({
+      query: ({ complaintId, updates }) => ({
+        url: `/update-compl/${complaintId}`,
+        method: 'PUT',
+        body: updates,
+      }),
+    }),
+
   }),
 });
 
@@ -322,4 +344,6 @@ export const {
   useGetBinsByIdQuery,
   useUpdateBinStatusMutation,
   useGetBinStatusReportQuery,
+  useGetAllComplaintsQuery,
+  useUpdateComplaintMutation
 } = authApi;

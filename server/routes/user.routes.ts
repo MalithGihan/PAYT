@@ -24,6 +24,7 @@ import {
 import {
   createComplaint,
   getComplaints,
+  getAllComplaints,
   updateComplaint,
   deleteComplaint,
 } from "../controllers/complaint.controller";
@@ -80,11 +81,14 @@ userRouter.delete("/del-req/:requestId", isAuthenticated, deleteRequest);
 
 userRouter.post("/create-compl", isAuthenticated, createComplaint);
 userRouter.get("/get-compls", isAuthenticated, getComplaints);
-userRouter.put("/update-compl/:complaintId", isAuthenticated, updateComplaint);
+userRouter.get("/get-All-compls", isAuthenticated, getAllComplaints);
+userRouter.put("/update-compl/:complaintId",
+  // isAuthenticated,
+  updateComplaint);
 userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint);
 
 
-userRouter.post("/create-bin", 
+userRouter.post("/create-bin",
   // isAuthenticated, 
   createBin);
 userRouter.get("/get-bins", isAuthenticated, getBins);
@@ -92,8 +96,8 @@ userRouter.get("/get-bins/:userId", isAuthenticated, getBinsbyid);
 
 userRouter.put("/update-bin/:binId",
   //  isAuthenticated,
-    updateBin);
-userRouter.delete("/del-bin/:binId", 
+  updateBin);
+userRouter.delete("/del-bin/:binId",
   // isAuthenticated, 
   deleteBin);
 
