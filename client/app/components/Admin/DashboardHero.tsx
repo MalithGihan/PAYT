@@ -7,6 +7,8 @@ const DashboardHero = (props: Props) => {
   return (
     <div>
         <DashboardHeader />
+
+        <div>Dashboard</div>
     </div>
   )
 }

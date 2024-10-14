@@ -8,7 +8,7 @@ import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import Activities from "../User/Activities";
 import Schedules from "../Driver/Schedules";
-import Notification from "../notification";
+import Notification from "../Notification";
 import CustomModel from "@/app/utils/CustomModel";
 
 type Props = {
