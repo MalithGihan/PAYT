@@ -62,7 +62,7 @@ const SlideBarProfile: FC<Props> = ({
         >
           <FaTrashRestore size={20} className="text-black dark:text-white" />
           <h5 className="pl-4 font-Poppins dark:text-white text-black font-medium">
-            Activities
+            Dashboard
           </h5>
         </div>
       )}
@@ -76,7 +76,7 @@ const SlideBarProfile: FC<Props> = ({
         >
           <FaPaperPlane size={20} className="text-black dark:text-white" />
           <h5 className="pl-4 font-Poppins dark:text-white text-black font-medium">
-            Schedules
+            Dashboard
           </h5>
         </div>
       )}
