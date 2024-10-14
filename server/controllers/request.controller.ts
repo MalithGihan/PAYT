@@ -15,8 +15,8 @@ export const createRequest = CatchAsyncError(async (req: Request, res: Response,
 });
 
 export const getRequests = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?._id as string;
-  const requests = await RequestModel.find({ userId });
+
+  const requests = await RequestModel.find({  });
   
   res.status(200).json({
     success: true,
