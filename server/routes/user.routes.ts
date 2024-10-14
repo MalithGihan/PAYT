@@ -24,9 +24,19 @@ import {
 import {
   createComplaint,
   getComplaints,
+  getAllComplaints,
   updateComplaint,
   deleteComplaint,
 } from "../controllers/complaint.controller";
+import {
+  createBin,
+  getBins,
+  getBinsbyid,
+  updateBin,
+  deleteBin,
+  updateBinStatus,
+  getBinStatusReport
+} from "../controllers/bin.controller";
 
 const userRouter = express.Router();
 
@@ -48,27 +58,53 @@ userRouter.get(
 );
 userRouter.put(
   "/update-user",
-  isAuthenticated,
-  authorizRoles("admin"),
+  // isAuthenticated,
+  // authorizRoles("admin"),
   updateUserRole
 );
 userRouter.delete(
   "/delete-user/:id",
-  isAuthenticated,
-  authorizRoles("admin"),
+  // isAuthenticated,
+  // authorizRoles("admin"),
   deleteUser
 );
 
 
-userRouter.post("/create-req", isAuthenticated, createRequest); 
-userRouter.get("/get-reqs", isAuthenticated, getRequests); 
-userRouter.put("/update-req/:requestId", isAuthenticated, updateRequest); 
+userRouter.post("/create-req", isAuthenticated, createRequest);
+userRouter.get("/get-reqs",
+  isAuthenticated,
+  getRequests);
+userRouter.put("/update-req/:requestId",
+  // isAuthenticated, 
+  updateRequest);
 userRouter.delete("/del-req/:requestId", isAuthenticated, deleteRequest);
 
-userRouter.post("/create-compl", isAuthenticated, createComplaint); 
-userRouter.get("/get-compls", isAuthenticated, getComplaints); 
-userRouter.put("/update-compl/:complaintId", isAuthenticated, updateComplaint); 
-userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint); 
+userRouter.post("/create-compl", isAuthenticated, createComplaint);
+userRouter.get("/get-compls/:userId", 
+  // isAuthenticated,
+   getComplaints);
+userRouter.get("/get-All-compls", isAuthenticated, getAllComplaints);
+userRouter.put("/update-compl/:complaintId",
+  // isAuthenticated,
+  updateComplaint);
+userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint);
+
+
+userRouter.post("/create-bin",
+  // isAuthenticated, 
+  createBin);
+userRouter.get("/get-bins", isAuthenticated, getBins);
+userRouter.get("/get-bins/:userId", isAuthenticated, getBinsbyid);
+
+userRouter.put("/update-bin/:binId",
+  //  isAuthenticated,
+  updateBin);
+userRouter.delete("/del-bin/:binId",
+  // isAuthenticated, 
+  deleteBin);
+
+userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
+userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
 
 
 export default userRouter;

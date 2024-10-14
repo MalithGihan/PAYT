@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import ComplaintModel from "../models/complaint.model";
-import { CatchAsyncError } from "../middleware/catchAsyncErrors"; 
+import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import ErrorHandler from "../utils/ErrorHandler";
 
 export const createComplaint = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -15,8 +15,17 @@ export const createComplaint = CatchAsyncError(async (req: Request, res: Respons
 });
 
 export const getComplaints = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?._id as string;
+  const { userId } = req.body;
   const complaints = await ComplaintModel.find({ userId });
+
+  res.status(200).json({
+    success: true,
+    complaints,
+  });
+});
+export const getAllComplaints = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+
+  const complaints = await ComplaintModel.find({}).populate('userId', 'name role');
 
   res.status(200).json({
     success: true,

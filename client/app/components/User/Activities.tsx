@@ -6,6 +6,7 @@ const Activities = () => {
   const [activeComponent, setActiveComponent] = useState("Complaints");
 
   return (
+
     <div className="w-full min-h-screen pb-10">
       {/* Buttons to switch components */}
       <div className="flex flex-row gap-5 mb-8">
@@ -34,6 +35,7 @@ const Activities = () => {
       <div>
         {activeComponent === "Complaints" && <Complaints />}
         {activeComponent === "Requests" && <Requests />}
+
       </div>
     </div>
   );

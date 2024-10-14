@@ -1,3 +1,4 @@
+
 "use client"
 import React,{FC,useState} from 'react'
 import { ThemeSwitcher } from '@/app/utils/ThemeSwitcher'
@@ -13,4 +14,6 @@ const DashboardHeader = (props: Props) => {
   )
 }
 
-export default DashboardHeader
+    
+
+export default DashboardHeader;
