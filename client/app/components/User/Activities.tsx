@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Complaints from "../User/ComplaintsUser"; 
-import Requests from "../User/RequestUser"; 
+import RequestsComponent from "../User/RequestUser"; // Updated import
 
-const Activities = () => {
+const Activities: React.FC<{ userId: string }> = ({ userId }) => { // Accept userId as a prop
   const [activeComponent, setActiveComponent] = useState("Complaints");
 
   return (
-
     <div className="w-full min-h-screen pb-10">
       {/* Buttons to switch components */}
       <div className="flex flex-row gap-5 mb-8">
@@ -34,8 +33,7 @@ const Activities = () => {
 
       <div>
         {activeComponent === "Complaints" && <Complaints />}
-        {activeComponent === "Requests" && <Requests />}
-
+        {activeComponent === "Requests" && <RequestsComponent userId={userId} />} {/* Pass userId prop */}
       </div>
     </div>
   );

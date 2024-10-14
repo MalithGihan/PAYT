@@ -47,6 +47,31 @@ type BinStatusReportResponse = {
   totalChanges: number;
 };
 
+
+// Define the RequestCollect type based on the schema
+type RequestCollect = {
+  _id: string;
+  userId: string;
+  driverId?: string;  // Optional field
+  binId: string;
+  status: 'pending' | 'collected' | 'cancelled';
+  message?: string;  // Optional field
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Define the response types for CRUD operations
+type RequestCollectResponse = {
+  success: boolean;
+  request: RequestCollect;
+};
+
+type RequestCollectListResponse = {
+  success: boolean;
+  requests: RequestCollect[];
+};
+
+
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<RegistrationResponse, RegistrationDate>({
@@ -281,7 +306,7 @@ export const authApi = apiSlice.injectEndpoints({
           console.log('Bin status report:', data);
         } catch (error) {
           console.error('Error fetching bin status report:', error);
-          toast.error("Failed to fetch bin status report.");
+          
         }
       },
     }),
@@ -322,6 +347,52 @@ export const authApi = apiSlice.injectEndpoints({
         method: 'GET',
       }),
     }),
+
+    //Garbage collecting requests
+   
+    // CREATE: Create a new request (POST /rc/:userId)
+    createRequestCollect: builder.mutation<RequestCollectResponse, { userId: string, newRequestData: Partial<RequestCollect> }>({
+      query: ({ userId, newRequestData }) => ({
+        url: `/rc/${userId}`,
+        method: 'POST',
+        body: newRequestData,
+      }),
+    }),
+
+    // READ: Get all requests (GET /rc)
+    getRequestsCollect: builder.query<RequestCollectListResponse, void>({
+      query: () => ({
+        url: '/rc',
+        method: 'GET',
+      }),
+    }),
+
+    // UPDATE: Update a request (PUT /rc/:requestId)
+    updateRequestCollect: builder.mutation<RequestCollectResponse, { requestId: string, updatedRequestData: Partial<RequestCollect> }>({
+      query: ({ requestId, updatedRequestData }) => ({
+        url: `/rc/${requestId}`,
+        method: 'PUT',
+        body: updatedRequestData,
+      }),
+    }),
+
+    // DELETE: Delete a request (DELETE /rc/:requestId)
+    deleteRequestCollect: builder.mutation<{ success: boolean }, string>({
+      query: (requestId) => ({
+        url: `/rc/${requestId}`,
+        method: 'DELETE',
+      }),
+    }),
+
+
+    // Get bins for the logged-in user
+    getUserBins: builder.query({
+      query: (userId) => ({
+        url: `/get-bins/${userId}`,
+        method: 'GET',
+      }),
+      // Optionally, you can add tags for cache invalidation if needed
+    }),
     
   }),
 });
@@ -347,5 +418,12 @@ export const {
   useGetAllComplaintsQuery,
   useUpdateComplaintMutation,
   useCreateComplaintMutation ,
-  useGetComplaintsQuery 
+  useGetComplaintsQuery,
+ 
+  //Collecting request api (frontend)
+  useCreateRequestCollectMutation,
+  useGetRequestsCollectQuery,
+  useUpdateRequestCollectMutation,
+  useDeleteRequestCollectMutation,
+  useGetUserBinsQuery
 } = authApi;
