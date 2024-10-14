@@ -72,27 +72,27 @@ const Sidebar = () => {
       sx={{
         "& .pro-sidebar-inner": {
           background: `${
-            theme === "dark" ? "#111C43 !important" : "#fff !important"
+            theme === "dark" ? "#111C43 !important" : "#86EFAC !important"
           }`,
         },
         "& .pro-sidebar-wrapper": {
           backgroundColor: "transparent !important",
         },
         "& .pro-inner-item:hover": {
-          colour: "#868dfb !important",
+          colour: "#fff !important",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: "#000 !important",
         },
         "& .pro-inner-item": {
           padding: "5px 35px 5px 20px !important",
           opacity: 1,
         },
         "@ .pro-menu-item": {
-          color: `${theme !== "dark" && "#000"}`,
+          color: `${theme !== "#fff" && "#000"}`,
         },
       }}
-      className="!bg-white dark:bg-[#111C43]"
+      className="!bg-[#86EFAC] dark:bg-white"
     >
       <ProSidebar
         collapsed={isCollapsed}
@@ -121,10 +121,10 @@ const Sidebar = () => {
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="inline-block"
                 >
-                  <ArrowBackIosIcon className="text-[#588157] dark:text-white" />
+                  <ArrowBackIosIcon className="text-[#000] dark:text-white" />
                 </IconButton>
                 <Link href="/">
-                  <h3 className="text-[20px] font-medium font-Poppins uppercase text-[#588157] dark:text-white">
+                  <h3 className="text-[20px] font-medium font-Poppins uppercase text-[#000] dark:text-white">
                     PAYT
                   </h3>
                 </Link>
@@ -149,7 +149,7 @@ const Sidebar = () => {
               <Box textAlign="center">
                 <Typography
                   variant="h4"
-                  className="!text-[20px] text-black dark:text-[#ffffffc1]"
+                  className="!text-[20px] text-white dark:text-[#fff]"
                   sx={{ m: "10px 0 0 0 " }}
                 >
                   {user?.name}
@@ -157,7 +157,7 @@ const Sidebar = () => {
                 <Typography
                   variant="h6"
                   sx={{ m: "10px 0 0 0 " }}
-                  className="!text-[15px] text-black dark:text-[#ffffffc1] capitalize"
+                  className="!text-[15px] text-white dark:text-[#fff] capitalize"
                 >
                   - {user?.role}
                 </Typography>
@@ -175,7 +175,7 @@ const Sidebar = () => {
             <Typography
               variant="h5"
               sx={{ m: "15px 0 5px 25px" }}
-              className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
+              className="!text-[18px] text-white dark:text-[#fff] capitalize !font-[400]"
             >
               {" "}
               {!isCollapsed && "Data"}
@@ -198,7 +198,7 @@ const Sidebar = () => {
             <Typography
               variant="h5"
               sx={{ m: "15px 0 5px 25px" }}
-              className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
+              className="!text-[18px] text-white dark:text-[#fff] capitalize !font-[400]"
             >
              
               {" "}
@@ -222,7 +222,7 @@ const Sidebar = () => {
             <Typography
               variant="h5"
               sx={{ m: "15px 0 5px 25px" }}
-              className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
+              className="!text-[18px] text-white dark:text-[#fff] capitalize !font-[400]"
             >
               {" "}
               {!isCollapsed && "Analytics"}
@@ -238,7 +238,7 @@ const Sidebar = () => {
             <Typography
               variant="h5"
               sx={{ m: "15px 0 5px 25px" }}
-              className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400]"
+              className="!text-[18px] text-white dark:text-[#fff] capitalize !font-[400]"
             >
               {" "}
               {!isCollapsed && "Extras"}

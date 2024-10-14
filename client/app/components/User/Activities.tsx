@@ -1,44 +1,39 @@
-import React from 'react';
-import { FaTrashAlt, FaRecycle, FaTruck } from 'react-icons/fa';
+import React, { useState } from "react";
+import Complaints from "../User/ComplaintsUser"; 
+import Requests from "../User/RequestUser"; 
 
 const Activities = () => {
-  const activities = [
-    {
-      id: 1,
-      title: 'Garbage Collection',
-      description: 'Weekly garbage collection by the city trucks every Monday and Thursday.',
-      icon: <FaTruck size={30} className="text-blue-600" />,
-    },
-    {
-      id: 2,
-      title: 'Recycling Initiative',
-      description: 'Join the recycling initiative to reduce plastic waste. Recycling bins are available at local parks.',
-      icon: <FaRecycle size={30} className="text-green-600" />,
-    },
-    {
-      id: 3,
-      title: 'Waste Segregation',
-      description: 'Learn how to segregate waste for composting, recycling, and safe disposal.',
-      icon: <FaTrashAlt size={30} className="text-red-600" />,
-    },
-  ];
+  const [activeComponent, setActiveComponent] = useState("Complaints");
 
   return (
-    <div className="w-full min-h-screen py-10">
-      <h1 className="text-3xl font-bold text-center mb-10">Garbage Management Activities</h1>
-      <div className="w-4/5 mx-auto grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {activities.map((activity) => (
-          <div
-            key={activity.id}
-            className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center justify-between"
-          >
-            <div className="flex items-center justify-center mb-4">
-              {activity.icon}
-            </div>
-            <h3 className="text-xl font-semibold mb-2">{activity.title}</h3>
-            <p className="text-gray-700 text-center">{activity.description}</p>
-          </div>
-        ))}
+    <div className="w-full min-h-screen pb-10">
+      {/* Buttons to switch components */}
+      <div className="flex flex-row gap-5 mb-8">
+        <input
+          type="button"
+          className={`text-center font-bold rounded-[8px] mt-4 mb-5 cursor-pointer py-2 px-4 drop-shadow-2xl ${
+            activeComponent === "Complaints"
+              ? "bg-green-300 text-white" 
+              : "bg-white text-black dark:bg-white dark:text-[#000]" 
+          }`}
+          value="Complaints"
+          onClick={() => setActiveComponent("Complaints")}
+        />
+        <input
+          type="button"
+          className={`text-center font-bold rounded-[8px] mt-4 mb-5 cursor-pointer py-2 px-4 drop-shadow-2xl ${
+            activeComponent === "Requests"
+              ? "bg-green-300 text-white" 
+              : "bg-white text-black dark:bg-white dark:text-[#000]"  
+          }`}
+          value="Requests"
+          onClick={() => setActiveComponent("Requests")}
+        />
+      </div>
+
+      <div>
+        {activeComponent === "Complaints" && <Complaints />}
+        {activeComponent === "Requests" && <Requests />}
       </div>
     </div>
   );

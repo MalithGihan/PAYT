@@ -134,7 +134,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
               />
             </div>
             <input
-              className={`w-[95%] 800px:w-[250px] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-4 mb-5 cursor-pointer`}
+              className={`w-[95%] 800px:w-[250px] h-[40px] border bg-green-300 dark:bg-white text-center dark:text-[#000] text-green-600 rounded-[8px] mt-4 mb-5 cursor-pointer`}
               required
               value="Upadate"
               type="submit"

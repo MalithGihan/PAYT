@@ -84,7 +84,7 @@ const ChangePassword: FC<Props> = (props) => {
           <div className="w-[100%] 00px:w-[60%] mt-5">
             <input
               type="submit"
-              className={`!w-[95%] h-[40px] border border-[#37a39a] text-center text-black dark:text-[#fff] rounded-[3px] mt-4 mb-5 cursor-pointer`}
+              className={`w-[95%] 800px:w-[250px] h-[40px] border bg-green-300 dark:bg-white text-center dark:text-[#000] text-green-600 rounded-[8px] mt-4 mb-5 cursor-pointer`}
               value="Update"
             />
           </div>
