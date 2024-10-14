@@ -50,7 +50,7 @@ const Profile: FC<Props> = ({ user }) => {
       <div className="absolute top-[100px] right-10 z-50">
         <button
           onClick={handleNotificationClick}
-          className="relative bg-white text-white rounded-full p-4 shadow-lg hover:bg-blue-500 transition ease-in-out duration-300"
+          className="relative bg-white text-white rounded-full p-4 shadow-lg hover:bg-green-300 transition ease-in-out duration-300"
         >
           🔔
           <span className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -64,7 +64,7 @@ const Profile: FC<Props> = ({ user }) => {
       )}
 
       <div
-        className={`w-[30%] 800px:w-[310px] h-full dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mt-[80px] mb-[80px] sticky p-[5px] ${
+        className={`w-[30%] 800px:w-[310px] h-full dark:bg-slate-900 bg-opacity-90 bg-green-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mt-[80px] mb-[80px] sticky p-[5px] ${
           scroll ? "top-[120px]" : "top-[30px]"
         } left-[30px]`}
       >
