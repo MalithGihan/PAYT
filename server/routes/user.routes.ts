@@ -38,6 +38,8 @@ import {
   getBinStatusReport
 } from "../controllers/bin.controller";
 
+import {createRequestController,getRequestsController,updateRequestController,deleteRequestController} from '../controllers/requestcollect.controller'
+
 const userRouter = express.Router();
 
 userRouter.post("/registration", registrationUser);
@@ -105,6 +107,11 @@ userRouter.delete("/del-bin/:binId",
 
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
+
+userRouter.post('/rc/:userId', createRequestController);
+userRouter.get('/rc', isAuthenticated, getRequestsController);
+userRouter.put('/rc/:requestId', isAuthenticated, updateRequestController);
+userRouter.delete('/rc/:requestId', isAuthenticated, deleteRequestController);
 
 
 export default userRouter;
