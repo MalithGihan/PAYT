@@ -108,9 +108,13 @@ userRouter.delete("/del-bin/:binId",
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
 
-userRouter.post('/rc/:userId', createRequestController);
-userRouter.get('/rc', isAuthenticated, getRequestsController);
-userRouter.put('/rc/:requestId', isAuthenticated, updateRequestController);
+userRouter.post('/rc/:userId',isAuthenticated, createRequestController);
+userRouter.get('/rc', 
+  // isAuthenticated,
+   getRequestsController);
+userRouter.put('/rc/:requestId', 
+  // isAuthenticated, 
+  updateRequestController);
 userRouter.delete('/rc/:requestId', isAuthenticated, deleteRequestController);
 
 
