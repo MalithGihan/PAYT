@@ -34,6 +34,20 @@ type BinsResponse = {
   bins: Bins[];
 };
 
+type BinStatusUpdateResponse = {
+  message: string;
+  bin: Bins;
+};
+
+type BinStatusReportResponse = {
+  binId: string;
+  startDate: string;
+  endDate: string;
+  trueCount: number;
+  falseCount: number;
+  totalChanges: number;
+};
+
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<RegistrationResponse, RegistrationDate>({
@@ -234,6 +248,44 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    updateBinStatus: builder.mutation<BinStatusUpdateResponse, { binId: string; isCollected: boolean }>({
+      query: ({ binId, isCollected }) => ({
+        url: `/bins/${binId}/status`,
+        method: 'PUT',
+        body: { isCollected },
+        credentials: "include" as const,
+      }),
+      async onQueryStarted({ binId }, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          toast.success(data.message);
+          // Optionally, you can update the cache here if needed
+          dispatch(authApi.util.invalidateTags(['Bin']));
+        } catch (error) {
+          console.error('Error updating bin status:', error);
+          toast.error("Failed to update bin status.");
+        }
+      },
+    }),
+
+    getBinStatusReport: builder.query<BinStatusReportResponse, { binId: string; startDate: string; endDate: string }>({
+      query: ({ binId, startDate, endDate }) => ({
+        url: `/bins/${binId}/status-report`,
+        method: 'GET',
+        params: { startDate, endDate },
+        credentials: "include" as const,
+      }),
+      async onQueryStarted({ binId }, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log('Bin status report:', data);
+        } catch (error) {
+          console.error('Error fetching bin status report:', error);
+          toast.error("Failed to fetch bin status report.");
+        }
+      },
+    }),
+
   }),
 });
 
@@ -252,5 +304,7 @@ export const {
   useCreateBinMutation,
   useUpdateBinMutation,
   useDeleteBinMutation,
-  useGetBinsByIdQuery
+  useGetBinsByIdQuery,
+  useUpdateBinStatusMutation,
+  useGetBinStatusReportQuery,
 } = authApi;

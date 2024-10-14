@@ -8,8 +8,8 @@ type Props = {}
 const DashboardHero = (props: Props) => {
   return (
     <div>
-      {/* <DashboardHeader />
-        <DashboardRequests/> */}
+      {/* <DashboardHeader /> */}
+        {/* <DashboardRequests/> */}
       <UserBin />
 
     </div>

@@ -33,6 +33,8 @@ import {
   getBinsbyid,
   updateBin,
   deleteBin,
+  updateBinStatus,
+  getBinStatusReport
 } from "../controllers/bin.controller";
 
 const userRouter = express.Router();
@@ -94,6 +96,9 @@ userRouter.put("/update-bin/:binId",
 userRouter.delete("/del-bin/:binId", 
   // isAuthenticated, 
   deleteBin);
+
+userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
+userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
 
 
 export default userRouter;

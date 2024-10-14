@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGetUsersQuery, useUpdateUserRoleMutation, useDeleteUserMutation } from "@/redux/features/auth/authApi";
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DashboardHeader: React.FC = () => {
   const { data: userData, isLoading, isError, refetch } = useGetUsersQuery();
@@ -10,6 +14,28 @@ const DashboardHeader: React.FC = () => {
   const [editingUser, setEditingUser] = useState<any>(null);
   const [newRole, setNewRole] = useState<string>('');
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [roleData, setRoleData] = useState<any>(null);
+
+  useEffect(() => {
+    if (userData) {
+      const roleCount = userData?.user?.reduce((acc: any, user: any) => {
+        acc[user.role] = (acc[user.role] || 0) + 1;
+        return acc;
+      }, {});
+
+      setRoleData({
+        labels: Object.keys(roleCount),
+        datasets: [
+          {
+            label: 'Users by Role ',
+            data: Object.values(roleCount),
+            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+          },
+        ],
+      });
+    }
+  }, [userData]);
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRole(event.target.value);
@@ -68,22 +94,24 @@ const DashboardHeader: React.FC = () => {
 
   return (
     <div className="dashboard-header bg-white shadow-md rounded-lg p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Users</h1>
-
-      {message && (
-        <div className={`mb-4 p-2 rounded ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {message.text}
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Users</h1>
+       {roleData && (
+        <div className="mt-5 mb-5 w-1/4">
+          <h2 className="text-xl font-semibold text-gray-700 mb-3">Role Distribution</h2>
+          <Pie data={roleData} />
         </div>
       )}
-
       <input
         type="text"
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Search by name or email"
         className="w-full p-2 border border-gray-300 rounded-lg bg-white text-black mb-4"
-      />
-
+      />{message && (
+        <div className={`mb-4 p-2 rounded ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          {message.text}
+        </div>
+      )}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-700 mb-3">Filter by Role:</h2>
         <div className="flex items-center space-x-4">

@@ -5,6 +5,10 @@ export interface iBin extends Document {
     location: string;
     size: String;
     isCollected: Boolean;
+    collectionHistory: {
+        status: boolean;
+        timestamp: Date;
+    }[];
 }
 
 const BinSchema: Schema<iBin> = new mongoose.Schema(
@@ -19,14 +23,22 @@ const BinSchema: Schema<iBin> = new mongoose.Schema(
             required: true,
         },
         size: {
-            type: String,
+            type: Number,
             required: true,
+        },
+        level: {
+            type: Number,
+            default: 0,
         },
         isCollected: {
             type: Boolean,
             required: true,
             default: false
-        }
+        },
+        collectionHistory: [{
+            status: Boolean,
+            timestamp: Date
+        }]
     },
     { timestamps: true }
 );

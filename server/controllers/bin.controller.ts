@@ -80,3 +80,60 @@ export const deleteBin = CatchAsyncError(async (req: Request, res: Response, nex
         message: "Bin deleted successfully",
     });
 });
+
+export const updateBinStatus = async (req: Request, res: Response) => {
+    try {
+        const { binId } = req.params;
+        const { isCollected } = req.body;
+
+        const bin = await BinModel.findById(binId);
+        if (!bin) {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+
+        bin.isCollected = isCollected;
+        bin.collectionHistory.push({
+            status: isCollected,
+            timestamp: new Date()
+        });
+
+        await bin.save();
+
+        res.status(200).json({ message: 'Bin status updated successfully', bin });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating bin status', error });
+    }
+};
+
+export const getBinStatusReport = async (req: Request, res: Response) => {
+    try {
+        const { binId } = req.params;
+        const { startDate, endDate } = req.query;
+
+        const bin = await BinModel.findById(binId);
+        if (!bin) {
+            return res.status(404).json({ message: 'Bin not found' });
+        }
+
+        const start = new Date(startDate as string);
+        const end = new Date(endDate as string);
+
+        const filteredHistory = bin.collectionHistory.filter(
+            (entry) => entry.timestamp >= start && entry.timestamp <= end
+        );
+
+        const trueCount = filteredHistory.filter((entry) => entry.status).length;
+        const falseCount = filteredHistory.filter((entry) => !entry.status).length;
+
+        res.status(200).json({
+            binId,
+            startDate: start,
+            endDate: end,
+            trueCount,
+            falseCount,
+            totalChanges: filteredHistory.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error generating bin status report', error });
+    }
+};
