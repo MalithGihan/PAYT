@@ -64,7 +64,7 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.activationToken,
             })
           );
-          
+
         } catch (error: any) {
           console.log(error);
         }
@@ -309,20 +309,19 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     createComplaint: builder.mutation<{ success: boolean; complaint: any }, { message: string }>({
       query: (data) => ({
-        url: '/create-compl', 
+        url: '/create-compl',
         method: 'POST',
-        body: data, 
-        credentials: "include", 
+        body: data,
+        credentials: "include",
       }),
-      invalidatesTags: ['Complaint'], 
+      invalidatesTags: ['Complaint'],
     }),
     getComplaints: builder.query({
       query: (userId: string) => ({
-        url: `/get-compls/${userId}`, 
+        url: `/get-compls/${userId}`,
         method: 'GET',
       }),
     }),
-    
   }),
 });
 
@@ -346,6 +345,6 @@ export const {
   useGetBinStatusReportQuery,
   useGetAllComplaintsQuery,
   useUpdateComplaintMutation,
-  useCreateComplaintMutation ,
-  useGetComplaintsQuery 
+  useCreateComplaintMutation,
+  useGetComplaintsQuery
 } = authApi;
