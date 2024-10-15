@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
-import { useFetchCollectRequestsQuery, useGetUsersQuery, useModifyRequestMutation } from '@/redux/features/auth/authApi';
+import React, { useState } from "react";
+import {
+  useFetchCollectRequestsQuery,
+  useGetUsersQuery,
+  useModifyRequestMutation,
+} from "@/redux/features/auth/authApi";
 
 interface Request {
   _id: string;
   userId: string;
   driverId?: string;
   binId: string;
-  status: 'pending' | 'collected' | 'cancelled';
+  status: "pending" | "collected" | "cancelled";
   message?: string;
   createdAt: string;
   updatedAt: string;
@@ -20,27 +24,38 @@ interface User {
 }
 
 function CollectionRequests() {
-  const { data: requestsData, error: requestsError, isLoading: isRequestsLoading, refetch } = useFetchCollectRequestsQuery({});
-  const { data: userData, isLoading: isUsersLoading, isError: isUsersError } = useGetUsersQuery();
+  const {
+    data: requestsData,
+    error: requestsError,
+    isLoading: isRequestsLoading,
+    refetch,
+  } = useFetchCollectRequestsQuery({});
+  const {
+    data: userData,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+  } = useGetUsersQuery();
   const [modifyRequest] = useModifyRequestMutation();
 
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
-  const [formData, setFormData] = useState<Omit<Request, '_id' | 'createdAt' | 'updatedAt'>>(
-    { userId: '', driverId: '', binId: '', status: 'pending', message: '' }
-  );
+  const [formData, setFormData] = useState<
+    Omit<Request, "_id" | "createdAt" | "updatedAt">
+  >({ userId: "", driverId: "", binId: "", status: "pending", message: "" });
 
   const handleSelectRequest = (request: Request) => {
     setSelectedRequest(request);
     setFormData({
       userId: request.userId,
-      driverId: request.driverId || '',
+      driverId: request.driverId || "",
       binId: request.binId,
       status: request.status,
-      message: request.message || '',
+      message: request.message || "",
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -49,10 +64,19 @@ function CollectionRequests() {
     e.preventDefault();
     if (selectedRequest) {
       try {
-        await modifyRequest({ requestId: selectedRequest._id, updates: formData }).unwrap();
+        await modifyRequest({
+          requestId: selectedRequest._id,
+          updates: formData,
+        }).unwrap();
         refetch();
         setSelectedRequest(null);
-        setFormData({ userId: '', driverId: '', binId: '', status: 'pending', message: '' });
+        setFormData({
+          userId: "",
+          driverId: "",
+          binId: "",
+          status: "pending",
+          message: "",
+        });
       } catch (error) {
         console.error("Failed to update request: ", error);
       }
@@ -65,7 +89,11 @@ function CollectionRequests() {
   });
 
   if (isRequestsLoading || isUsersLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (requestsError) {
@@ -84,155 +112,220 @@ function CollectionRequests() {
     );
   }
 
-  const filteredDrivers = userData?.user?.filter((user: User) => user.role === 'driver');
+  const filteredDrivers = userData?.user?.filter(
+    (user: User) => user.role === "driver"
+  );
 
   return (
-    <div className="w-full min-h-screen p-6 bg-gray-300">
-      <h1 className="text-3xl font-bold mb-6 text-center text-black">Collection Requests</h1>
+    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 h-full">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-10">
+        Collection Requests
+      </h1>
 
-      <div className="overflow-x-auto mb-6 text-black font-bold">
-        <table className="min-w-full bg-white shadow-md rounded-lg border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="py-4 px-6 border-b text-left">ID</th>
-              <th className="py-4 px-6 border-b text-left">User Name</th>
-              <th className="py-4 px-6 border-b text-left">Driver Name</th>
-              <th className="py-4 px-6 border-b text-left">Bin ID</th>
-              <th className="py-4 px-6 border-b text-left">Status</th>
-              <th className="py-4 px-6 border-b text-left">Message</th>
-              <th className="py-4 px-6 border-b text-left">Created At</th>
-              <th className="py-4 px-6 border-b text-left">Updated At</th>
-              <th className="py-4 px-6 border-b text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requestsData?.requests?.length ? (
-              requestsData.requests.map((request: Request) => (
-                <tr key={request._id} className="hover:bg-gray-50 text-center">
-                  <td className="py-4 px-6 border-b">{request._id}</td>
-                  <td className="py-4 px-6 border-b">{userIdToNameMap[request.userId] || 'N/A'}</td>
-                  <td className="py-4 px-6 border-b">{request.driverId ? userIdToNameMap[request.driverId] || 'N/A' : 'N/A'}</td>
-                  <td className="py-4 px-6 border-b">{request.binId}</td>
-                  <td className="py-4 px-6 border-b">
-                    <span
-                      className={`px-2 py-1 rounded-full text-white font-semibold ${request.status === 'pending' ? 'bg-yellow-500' : request.status === 'collected' ? 'bg-green-500' : 'bg-red-500'}`}
-                    >
-                      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 border-b">{request.message || 'N/A'}</td>
-                  <td className="py-4 px-6 border-b">
-                    {new Date(request.createdAt).toLocaleString('en-US', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </td>
-                  <td className="py-4 px-6 border-b">
-                    {new Date(request.updatedAt).toLocaleString('en-US', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </td>
-                  <td className="py-4 px-6 border-b">
-                    <button
-                      onClick={() => handleSelectRequest(request)}
-                      className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    >
-                      Edit
-                    </button>
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden dark:bg-gray-700">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[800px] divide-y divide-gray-200 dark:bg-gray-900">
+            <thead className="bg-gray-50 dark:bg-slate-800">
+              <tr>
+                {[
+                  "User",
+                  "Driver",
+                  "Bin",
+                  "Status",
+                  "Message",
+                  "Created",
+                  "Updated",
+                  "Actions",
+                ].map((header) => (
+                  <th
+                    key={header}
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
+              {requestsData?.requests?.length ? (
+                requestsData.requests.map((request: Request) => (
+                  <tr
+                    key={request._id}
+                    className="hover:bg-gray-50 dark:hover:bg-black"
+                  >
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {userIdToNameMap[request.userId] || "N/A"}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {request.driverId
+                        ? userIdToNameMap[request.driverId] || "N/A"
+                        : "N/A"}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {request.binId}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        ${
+                          request.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : request.status === "collected"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {request.status.charAt(0).toUpperCase() +
+                          request.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {request.message
+                        ? request.message.slice(0, 20) +
+                          (request.message.length > 20 ? "..." : "")
+                        : "N/A"}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {new Date(request.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-white">
+                      {new Date(request.updatedAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <input
+                        value="Edit"
+                        type="button"
+                        onClick={() => handleSelectRequest(request)}
+                        className="bg-green-400 dark:bg-white hover:bg-green-700 text-white dark:text-black font-bold text-xs self-baseline mt-1 py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={9}
+                    className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center"
+                  >
+                    No collection requests available.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td className="py-4 px-6 border-b text-center" colSpan={9}>
-                  No collection requests available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
       {selectedRequest && (
-        <form onSubmit={handleSubmit} className="mb-8 p-6 border border-gray-300 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Edit Request</h2>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="userId">User ID</label>
-            <input
-              type="text"
-              name="userId"
-              value={formData.userId}
-              onChange={handleChange}
-              className="border rounded w-full p-2 bg-gray-100"
-              disabled
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="driverId">Driver</label>
-            <select
-              name="driverId"
-              value={formData.driverId}
-              onChange={handleChange}
-              className="border rounded w-full p-2 bg-gray-100"
-            >
-              <option value="">Select Driver</option>
-              {filteredDrivers?.map((driver: User) => (
-                <option key={driver._id} value={driver._id}>
-                  {driver.name} - {driver.email}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="binId">Bin ID</label>
-            <input
-              type="text"
-              name="binId"
-              value={formData.binId}
-              onChange={handleChange}
-              className="border rounded w-full p-2 bg-gray-100"
-              disabled
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="status">Status</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="border rounded w-full p-2 bg-gray-100"
-            >
-              <option value="pending">Pending</option>
-              <option value="collected">Collected</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="message">Message</label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              className="border rounded w-full p-2 bg-gray-100"
-              rows={3}
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-300"
-          >
-            Update Request
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedRequest(null)}
-            className="bg-gray-300 text-black font-semibold py-2 px-4 ml-4 rounded-lg hover:bg-gray-400 transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
-          >
-            Cancel
-          </button>
-        </form>
+        <div className="mt-8 bg-white shadow-lg rounded-lg overflow-hidden dark:bg-gray-900">
+          <form onSubmit={handleSubmit} className="p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Edit Request
+            </h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="userId"
+                >
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  name="userId"
+                  value={formData.userId}
+                  onChange={handleChange}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-100 text-black p-2 dark:text-white dark:bg-black"
+                  disabled
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="driverId"
+                >
+                  Driver
+                </label>
+                <select
+                  name="driverId"
+                  value={formData.driverId}
+                  onChange={handleChange}
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black dark:text-white dark:bg-black"
+                >
+                  <option value="">Select Driver</option>
+                  {filteredDrivers?.map((driver: User) => (
+                    <option key={driver._id} value={driver._id}>
+                      {driver.name} - {driver.email}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="binId"
+                >
+                  Bin ID
+                </label>
+                <input
+                  type="text"
+                  name="binId"
+                  value={formData.binId}
+                  onChange={handleChange}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-100 text-black p-2 dark:text-white dark:bg-black"
+                  disabled
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="status"
+                >
+                  Status
+                </label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black dark:text-white dark:bg-black"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="collected">Collected</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="message"
+                >
+                  Message
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-100 text-black p-2 dark:text-white dark:bg-black"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end space-x-3">
+              <input
+                value="Cancel"
+                type="button"
+                onClick={() => setSelectedRequest(null)}
+                className="bg-red-600 hover:bg-red-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+              />
+
+              <input
+                value="Update Request"
+                type="submit"
+                className="bg-black hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[150px]"
+              />
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

@@ -46,9 +46,8 @@ const ListtoCollect = () => {
     };
 
     return (
-        <div className="p-6 bg-green-50 dark:bg-gray-900 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold text-green-700 dark:text-white mb-4">List Collect</h2>
-
+        <div className="p-6">
+            
             <div className="overflow-x-auto mb-8">
                 <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
                     <thead className="bg-green-200">

@@ -9,14 +9,12 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 interface User {
   _id: string;
   role: string;
-  // Add other user properties as needed
 }
 
 interface Complaint {
   _id: string;
   userId: User;
   status: 'rejected' | 'completed' | 'pending';
-  // Add other complaint properties as needed
 }
 
 const DashboardHero: React.FC = () => {
