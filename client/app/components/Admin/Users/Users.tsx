@@ -1,41 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useGetUsersQuery, useUpdateUserRoleMutation, useDeleteUserMutation } from "@/redux/features/auth/authApi";
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import React, { useState, useEffect } from "react";
+import {
+  useGetUsersQuery,
+  useUpdateUserRoleMutation,
+  useDeleteUserMutation,
+} from "@/redux/features/auth/authApi";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Users: React.FC = () => {
   const { data: userData, isLoading, isError, refetch } = useGetUsersQuery();
   const [updateUserRole] = useUpdateUserRoleMutation();
-  const [deleteUser] = useDeleteUserMutation(); 
-  const [selectedRole, setSelectedRole] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [deleteUser] = useDeleteUserMutation();
+  const [selectedRole, setSelectedRole] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [editingUser, setEditingUser] = useState<any>(null);
-  const [newRole, setNewRole] = useState<string>('');
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [roleData, setRoleData] = useState<any>(null);
-
-  useEffect(() => {
-    if (userData) {
-      const roleCount = userData?.user?.reduce((acc: any, user: any) => {
-        acc[user.role] = (acc[user.role] || 0) + 1;
-        return acc;
-      }, {});
-
-      setRoleData({
-        labels: Object.keys(roleCount),
-        datasets: [
-          {
-            label: 'Users by Role ',
-            data: Object.values(roleCount),
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-          },
-        ],
-      });
-    }
-  }, [userData]);
+  const [newRole, setNewRole] = useState<string>("");
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRole(event.target.value);
@@ -46,8 +30,8 @@ const Users: React.FC = () => {
   };
 
   const handleEditUser = (user: any) => {
-    console.log('Editing user:', user);
-    console.log('Current role:', user.role);
+    console.log("Editing user:", user);
+    console.log("Current role:", user.role);
     setEditingUser(user);
     setNewRole(user.role);
   };
@@ -56,67 +40,83 @@ const Users: React.FC = () => {
     if (editingUser && newRole && newRole !== editingUser.role) {
       try {
         await updateUserRole({ id: editingUser._id, role: newRole }).unwrap();
-        setMessage({ type: 'success', text: `Role updated to ${newRole} for ${editingUser.name}` });
+        setMessage({
+          type: "success",
+          text: `Role updated to ${newRole} for ${editingUser.name}`,
+        });
         setEditingUser(null);
         refetch();
       } catch (error) {
-        console.error('Failed to update user role:', error);
-        setMessage({ type: 'error', text: 'Failed to update user role' });
+        console.error("Failed to update user role:", error);
+        setMessage({ type: "error", text: "Failed to update user role" });
       }
     }
   };
 
   const handleCancelEdit = () => {
     setEditingUser(null);
-    setNewRole('');
+    setNewRole("");
   };
 
   const handleDeleteUser = async (id: string) => {
     try {
-      await deleteUser(id).unwrap(); 
-      setMessage({ type: 'success', text: 'User deleted successfully' });
+      await deleteUser(id).unwrap();
+      setMessage({ type: "success", text: "User deleted successfully" });
       refetch();
     } catch (error) {
-      console.error('Failed to delete user:', error);
-      setMessage({ type: 'error', text: 'Failed to delete user' });
+      console.error("Failed to delete user:", error);
+      setMessage({ type: "error", text: "Failed to delete user" });
     }
   };
 
   const filteredUsers = userData?.user?.filter((user: any) => {
-    const matchesRole = selectedRole === 'all' ? true : user.role === selectedRole;
-    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesRole =
+      selectedRole === "all" ? true : user.role === selectedRole;
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesRole && matchesSearch;
   });
 
-  if (isLoading) return <div className="text-center text-gray-600">Loading users...</div>;
-  if (isError) return <div className="text-center text-red-500">Error loading users</div>;
+  if (isLoading)
+    return <div className="text-center text-gray-600">Loading users...</div>;
+  if (isError)
+    return <div className="text-center text-red-500">Error loading users</div>;
 
   return (
-    <div className="dashboard-header bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Users</h1>
-       {roleData && (
-        <div className="mt-5 mb-5 w-1/4">
-          <h2 className="text-xl font-semibold text-gray-700 mb-3">Role Distribution</h2>
-          <Pie data={roleData} />
-        </div>
-      )}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[100vh]">
+      <h1 className="text-2xl font-bold text-black dark:text-white mb-6">
+        Dashboard Users
+      </h1>
+
       <input
         type="text"
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Search by name or email"
-        className="w-full p-2 border border-gray-300 rounded-lg bg-white text-black mb-4"
-      />{message && (
-        <div className={`mb-4 p-2 rounded ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        className="flex float-end w-[30%] self-end p-2 border border-gray-300 rounded-lg bg-white text-black mb-4 shadow-md dark:bg-gray-700"
+      />
+      {message && (
+        <div
+          className={`mb-4 p-2 rounded ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
           {message.text}
         </div>
       )}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-700 mb-3">Filter by Role:</h2>
+        <h2 className="text-ms font-bold text-gray-700 dark:text-white mb-3">
+          Filter by Role:
+        </h2>
         <div className="flex items-center space-x-4">
-          {['all', 'admin', 'user', 'driver'].map((role) => (
-            <label key={role} className="flex items-center text-black">
+          {["all", "admin", "user", "driver"].map((role) => (
+            <label
+              key={role}
+              className="flex items-center text-black font-semibold dark:text-white"
+            >
               <input
                 type="radio"
                 value={role}
@@ -130,21 +130,36 @@ const Users: React.FC = () => {
         </div>
       </div>
 
-      <div className="user-list bg-gray-100 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold text-gray-700 mb-3">Users:</h2>
+      <div className="user-list">
+        <h2 className="text-xl font-semibold text-black dark:text-green-300 mb-7">
+          Users
+        </h2>
         {filteredUsers && filteredUsers.length > 0 ? (
           <ul className="space-y-4">
             {filteredUsers.map((user: any) => (
-              <li key={user._id} className="p-4 bg-white shadow rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <li
+                key={user._id}
+                className="p-4 bg-white shadow-lg rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between dark:bg-gray-800 mb-5"
+              >
                 <div className="sm:flex-grow">
-                  <p className="text-lg font-medium text-gray-800"> Name : {user.name}</p>
-                  <p className="text-sm text-gray-600">Email : {user.email}</p>
-                  <p className="text-sm text-gray-600">Address: {user.address}</p>
-                  <p className="text-sm text-gray-600">Role : {user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>
+                  <p className="text-lg font-bold text-gray-800 dark:text-white">
+                    {" "}
+                    Name : {user.name}
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700 dark:text-white">
+                    Email : {user.email}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Address: {user.address}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-white">
+                    Role :{" "}
+                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                  </p>
                 </div>
-                <div className="mt-4 sm:mt-0 sm:ml-6">
+                <div className="flex justify-end">
                   {editingUser && editingUser._id === user._id ? (
-                    <div>
+                    <div >
                       <select
                         value={newRole}
                         onChange={(e) => setNewRole(e.target.value)}
@@ -154,33 +169,36 @@ const Users: React.FC = () => {
                         <option value="admin">Admin</option>
                         <option value="driver">Driver</option>
                       </select>
-                      <button
+                      
+                      <div className="flex gap-5 self-baseline">
+                      <input
+                        value="Save"
+                        type="button"
                         onClick={handleUpdateRole}
-                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition mr-2"
-                      >
-                        Save
-                      </button>
-                      <button
+                        className="bg-black hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+                      />
+                      <input
+                        value="Cancel"
+                        type="button"
                         onClick={handleCancelEdit}
-                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
-                      >
-                        Cancel
-                      </button>
+                        className="bg-red-600 hover:bg-red-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+                      /> 
+                      </div>
                     </div>
                   ) : (
                     <div className="flex space-x-4">
-                      <button
+                      <input
+                        value="Edit"
+                        type="button"
                         onClick={() => handleEditUser(user)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                      >
-                        Edit
-                      </button>
-                      <button
+                        className="bg-black hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+                      />
+                      <input
+                        value="Delete"
+                        type="button"
                         onClick={() => handleDeleteUser(user._id)}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                      >
-                        Delete
-                      </button>
+                        className="bg-red-600 hover:bg-red-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px]"
+                      />
                     </div>
                   )}
                 </div>
