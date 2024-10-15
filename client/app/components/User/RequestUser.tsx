@@ -2,26 +2,30 @@ import React, { useState } from "react";
 import { useGetBinsByIdQuery, useCreateRequestMutation } from '@/redux/features/auth/authApi';
 import { useSelector } from 'react-redux';
 
+// Define the correct type for a single bin
+interface Bin {
+  _id: string;
+  location: string; // Changed from Location to location
+  size: string;
+  level: string;
+}
+
 const RequestsComponent: React.FC = () => {
-  const [binId, setBinId] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [selectedBinId, setSelectedBinId] = useState('');
+  const [message, setMessage] = useState('');
 
   const user = useSelector((state: any) => state.auth.user);
   if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <div>Please log in to view this page.</div>;
   }
 
   const { data: binsData, error: binsError, isLoading: binsLoading } = useGetBinsByIdQuery(user._id);
   const [createRequestCollect, { isLoading, error }] = useCreateRequestMutation();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!binId) {
+    if (!selectedBinId) {
       console.error('No bin selected');
       return;
     }
@@ -29,10 +33,10 @@ const RequestsComponent: React.FC = () => {
     try {
       await createRequestCollect({
         userId: user._id,
-        data: { binId, message }
+        data: { binId: selectedBinId, message }
       }).unwrap();
       console.log('Request created successfully');
-      setBinId('');
+      setSelectedBinId('');
       setMessage('');
     } catch (err) {
       console.error('Error creating request:', err);
@@ -40,45 +44,55 @@ const RequestsComponent: React.FC = () => {
   };
 
   return (
-    <div className="p-5 bg-green-100 dark:bg-gray-800 rounded-lg shadow-lg">
-      <h2 className="text-lg font-bold mb-4">Create Garbage Collection Request</h2>
-
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4 text-black">Create Garbage Collection Request</h2>
+      
       {binsLoading && <p>Loading bins...</p>}
       {binsError && <p className="text-red-500">Error fetching bins: {JSON.stringify(binsError)}</p>}
-
+      
       {binsData && (
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="binId" className="block mb-2">Select Bin:</label>
-            <select
-              id="binId"
-              value={binId}
-              onChange={(e) => setBinId(e.target.value)}
-              className="border rounded-lg p-2 w-full"
-              required
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          {binsData.bins.map((bin: Bin) => (
+            <div 
+              key={bin._id} 
+              className={` rounded-lg p-4 cursor-pointer shadow-lg bg-white ${selectedBinId === bin._id ? 'border-green-500 border-2' : 'border-gray-200'}`}
+              onClick={() => setSelectedBinId(bin._id)}
             >
-              <option value="" disabled>Select a bin</option>
-              {binsData.bins.map((bin: { _id: string; Location: string; size: string; level: string }) => (
-                <option key={bin._id} value={bin._id}>
-                  Location: {bin.Location} | Size: {bin.size} | Level: {bin.level}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="message" className="block mb-2">Message (optional):</label>
-            <textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="border rounded-lg p-2 w-full"
-            />
-          </div>
-          <button type="submit" disabled={isLoading} className="bg-blue-500 text-white rounded-lg py-2 px-4">
-            {isLoading ? 'Submitting...' : 'Submit Request'}
-          </button>
-          {error && <p className="text-red-500 mt-2">Error: {JSON.stringify(error)}</p>}
-        </form>
+              <h3 className="font-bold mb-2 text-black">{bin.location}</h3>
+              <p className="font-thin text-black">Size: {bin.size}</p>
+              <p className="font-thin text-black text-3xl my-4">Level: {bin.level}</p>
+              <input
+                  value={selectedBinId === bin._id ? "Selected" : "Select"}
+                  type="button"
+                className={`bg-black hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[100px] ${selectedBinId === bin._id ? 'bg-green-500 text-white' : 'bg-black text-gray-800'}`}
+              />
+                
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="message" className="block mb-2">Message (optional):</label>
+          <textarea
+            id="message"
+            value={message}
+            placeholder="Any messages ?"
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full border rounded-lg p-2 text-black"
+          />
+        </div>
+        <input
+          type="submit" 
+          value={isLoading ? 'Submitting...' : 'Submit Request'}
+          disabled={!selectedBinId || isLoading}
+          className={`bg-black hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[150px] ${!selectedBinId || isLoading ? 'bg-black text-white' : 'bg-green-500 text-white'}`}
+        />
+      </form>
+
+      {error && (
+        <p className="text-red-500 mt-4">Error: {JSON.stringify(error)}</p>
       )}
     </div>
   );

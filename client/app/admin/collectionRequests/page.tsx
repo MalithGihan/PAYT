@@ -10,7 +10,7 @@ type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div>
+    <div className='h-[100vh]'>
         <Heading
           title="Elearning"
           description=" Elaeaning is dun to learn"

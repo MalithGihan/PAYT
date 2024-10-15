@@ -90,7 +90,7 @@ const Profile: FC<Props> = ({ user }) => {
       )}
 
       {active === 3 && (
-        <div className="w-full h-[75vh] bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 p-5 mb-7">
+        <div className="w-full h-[100vh] bg-transparent mt-[80px]  dark:bg-slate-900 bg-opacity-90 bg-slate-300 dark:border-[#ffffff1d] border-white rounded-[5px] shadow-xl mx-6 p-5 mb-7">
           <Activities />
         </div>
       )}
