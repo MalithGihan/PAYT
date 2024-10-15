@@ -58,7 +58,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
     <div className="w-full">
       <h1 className={`${styles.title}`}>Join to PAYT</h1>
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
+        <div >
           <label className={`${styles.label}`} htmlFor="email">
             Enter your name
           </label>
@@ -77,7 +77,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             <span className="text-red-500 pt-2 block">{errors.name}</span>
           )}
         </div>
-        <div className="mb-3">
+        <div >
           <label className={`${styles.label}`} htmlFor="houseOwnerName">
             Enter house owner address
           </label>
@@ -96,7 +96,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             <span className="text-red-500 pt-2 block">{errors.houseOwnerName}</span>
           )}
         </div>
-        <div className="mb-3">
+        <div >
           <label className={`${styles.label}`} htmlFor="address">
             Enter your name
           </label>
@@ -132,7 +132,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
         {errors.email && touched.email && (
           <span className="text-red-500 pt-2 block">{errors.email}</span>
         )}
-        <div className="w-full mt-4 relative mb-1">
+        <div className="w-full relative">
           <label className={`${styles.label}`} htmlFor="email">
             Enter your password
           </label>
@@ -149,13 +149,13 @@ const SignUp: FC<Props> = ({ setRoute }) => {
           />
           {!show ? (
             <AiOutlineEyeInvisible
-              className="absolute bottom-2 right-2 z-1 cursor-pointer"
+              className="absolute bottom-2 right-2 z-1 cursor-pointer mb-4"
               size={20}
               onClick={() => setShow(true)}
             />
           ) : (
             <AiOutlineEyeInvisible
-              className="absolute bottom-2 right-2 z-1 cursor-pointer"
+              className="absolute bottom-2 right-2 z-1 cursor-pointer mg-4"
               size={20}
               onClick={() => setShow(false)}
             />

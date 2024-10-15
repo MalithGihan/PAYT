@@ -64,7 +64,7 @@ const Login:FC<Props> = ({setRoute,setOpen}) => {
             {errors.email && touched.email && (
                 <span className='text-red-500 pt-2 block'>{errors.email}</span>
             )}
-            <div className='w-full mt-5 relative mb-1'>
+            <div className='w-full relative'>
             <label className={`${styles.label}`} htmlFor='email'>Enter your password</label>
             <input 
              type={!show ? "password": "text"}
@@ -77,13 +77,13 @@ const Login:FC<Props> = ({setRoute,setOpen}) => {
             />
             {!show ? (
                 <AiOutlineEyeInvisible 
-                className='absolute bottom-3 right-2 z-1 cursor-pointer'
+                className='absolute bottom-3 right-2 z-1 cursor-pointer mb-3'
                 size={20}
                 onClick={() => setShow(true)}
                 />
             ):(
                 <AiOutlineEyeInvisible 
-                className='absolute bottom-3 right-2 z-1 cursor-pointer'
+                className='absolute bottom-3 right-2 z-1 cursor-pointer mb-3'
                 size={20}
                 onClick={() => setShow(false)}
                 />

@@ -12,14 +12,14 @@ import {
   GroupsIcon,
   WysiwygIcon,
   ExitToAppIcon,
-  QuizIcon
+  QuizIcon,
+  MapOutlinedIcon,
 } from "./Icon";
 import avatarDefault from "../../../../public/assests/avatar.png";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { redirect } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 
@@ -43,7 +43,7 @@ const Item: FC<itemProps> = ({ title, to, icon, selected, setSelected, onClick})
       }}
       icon={icon}
     >
-      <Typography className="!text-[16px] !font-Poppins">{title}</Typography>
+      <Typography className="!text-[16px] !font-Poppins text-sm">{title}</Typography>
       {to && <Link href={to} />} 
     </MenuItem>
   );
@@ -228,9 +228,9 @@ const Sidebar = () => {
               {!isCollapsed && "Analytics"}
             </Typography>
             <Item
-              title="Collection Analytics"
+              title="Bin Register"
               to="/admin/collection-analytics"
-              icon={<BarChartOutlinedIcon />}
+              icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

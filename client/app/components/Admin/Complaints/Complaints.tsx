@@ -61,26 +61,26 @@ const Complaints = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-5 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-center mb-5">Complaints</h2>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[100%]">
+      <div className="flex flex-row justify-start gap-6 mb-4">
+      <h2 className="text-2xl font-bold text-black dark:text-white mb-6">Complaints</h2>
 
-      <div className="text-center mb-4">
-        <button
+        <input
+          value="Refetch Complaints"
+          type="button"
           onClick={() => refetch()}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
-        >
-          Refetch Complaints
-        </button>
+          className="bg-green-400 dark:bg-white hover:bg-green-700 text-white dark:text-black font-bold text-xs self-baseline mt-1 py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out"
+        />
       </div>
 
-      <div className="flex justify-between mb-4">
-        <div className="w-1/2 pr-2">
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Filter by Role</label>
+      <div className="flex justify-start mb-8">
+        <div className="mr-8">
+          <label htmlFor="role" className="text-sm font-bold text-gray-900 dark:text-white">Filter by Role</label>
           <select
             id="role"
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-white text-black px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-[300px] border-gray-300 rounded-sm shadow-sm bg-black dark:bg-white text-white dark:text-black px-4 py-2 focus:ring-green-400 focus:border-grenn-400 "
           >
             <option value="">All Roles</option>
             <option value="driver">Driver</option>
@@ -88,13 +88,13 @@ const Complaints = () => {
             <option value="user">User</option>
           </select>
         </div>
-        <div className="w-1/2 pl-2">
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700">Filter by Status</label>
+        <div className="">
+          <label htmlFor="status" className="text-sm font-bold text-gray-900 dark:text-white">Filter by Status</label>
           <select
             id="status"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="mt-1 block w-full border-black rounded-md bg-white text-black px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-[300px] border-gray-300 rounded-sm shadow-sm bg-black dark:bg-white text-white dark:text-black px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">All Statuses</option>
             <option value="rejected">Rejected</option>
@@ -104,25 +104,23 @@ const Complaints = () => {
         </div>
       </div>
 
-      <div className="mb-6">
-        <Bar data={barChartData} />
-      </div>
 
       <ul className="space-y-4">
         {filteredComplaints && filteredComplaints.map((complaint) => (
           <li
             key={complaint._id}
-            className="p-4 border rounded-lg hover:bg-gray-100 transition duration-200 cursor-pointer"
+            className="px-3 py-2 rounded-lg hover:bg-gray-100 bg-white transition duration-200 cursor-pointer flex flex-row justify-between shadow-lg mb-5 dark:bg-gray-800"
           >
-            <div className="text-lg font-semibold text-gray-700">
+            <div>
+            <div className="text-[17px] font-semibold text-gray-700 dark:text-white">
               <strong>User:</strong> {complaint.userId?.name || 'Unknown User'}
               ({complaint.userId?.role || 'Unknown Role'})
             </div>
             <div className="mt-1">
-              <strong className="block text-lg font-semibold text-gray-700">Message: {complaint.message}</strong>
+              <strong className="block text-[15px] font-semibold text-gray-700 dark:text-white">Message: {complaint.message}</strong>
               <span className="text-gray-600"></span>
             </div>
-            <div className="mt-2 text-sm text-gray-500">
+            <div className="mt-2 text-sm text-gray-500 dark:text-gray-300">
               <strong>Status:</strong> {complaint.status} <br />
               <strong>Date:</strong> {new Date(complaint.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -130,13 +128,14 @@ const Complaints = () => {
                 day: 'numeric',
               })}
             </div>
-            <div className="mb-4 p-4 border rounded-lg bg-gray-100 mt-4">
-              <h3 className="text-lg font-semibold mb-2 text-black">Update Complaint Status</h3>
-              <div className="flex items-center">
+            </div>
+            <div className="mb-4 p-4 rounded-lg bg-gray-100 mt-4 dark:bg-gray-900">
+              <h3 className="text-xm font-bold mb-3 text-black dark:text-white">Update Complaint Status</h3>
+              <div className="flex items-center gap-4">
                 <select
                   value={newStatusMap[complaint._id] || complaint.status}
                   onChange={(e) => setNewStatusMap((prev) => ({ ...prev, [complaint._id]: e.target.value }))}
-                  className="mr-2 rounded-md shadow-sm bg-white text-black px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="dark:bg-black bg-green-400  hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[150px]"
                 >
                   <option value="rejected">Rejected</option>
                   <option value="completed">Completed</option>
@@ -144,7 +143,7 @@ const Complaints = () => {
                 </select>
                 <button
                   onClick={() => handleUpdateStatus(complaint._id)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+                  className= "dark:bg-black bg-green-400  hover:bg-green-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out w-[150px]"
                 >
                   Update Complaint
                 </button>
