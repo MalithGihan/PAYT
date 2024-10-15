@@ -1,50 +1,40 @@
 import React, { useState } from "react";
-import { useCreateRequestCollectMutation } from '@/redux/features/auth/authApi'; // Adjust the import based on your file structure
+import { useGetBinsByIdQuery, useCreateRequestMutation } from '@/redux/features/auth/authApi';
+import { useSelector } from 'react-redux';
 
-type RequestCollect = {
-  _id: string;
-  userId: string;
-  driverId?: string; // Optional field
-  binId: string;
-  status: 'pending' | 'collected' | 'cancelled';
-  message?: string; // Optional field
-  createdAt: string;
-  updatedAt: string;
-};
-
-const RequestsComponent: React.FC<{ userId: string }> = ({ userId }) => {
+const RequestsComponent: React.FC = () => {
   const [binId, setBinId] = useState<string>('');
-  const [status, setStatus] = useState<'pending' | 'collected' | 'cancelled'>('pending');
   const [message, setMessage] = useState<string>('');
-  
-  // Use the mutation hook
-  const [createRequestCollect, { isLoading, error }] = useCreateRequestCollectMutation();
+
+  const user = useSelector((state: any) => state.auth.user);
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  const { data: binsData, error: binsError, isLoading: binsLoading } = useGetBinsByIdQuery(user._id);
+  const [createRequestCollect, { isLoading, error }] = useCreateRequestMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const userId = '670ca24993c78fd0aadd099e'
+    if (!binId) {
+      console.error('No bin selected');
+      return;
+    }
 
-    // Create the new request data
-    const newRequestData: Partial<RequestCollect> = {
-      binId,
-      userId,
-      status,
-      message,
-      createdAt: new Date().toISOString(), // Adjust according to your requirements
-      updatedAt: new Date().toISOString(),
-    };
-
-    // Call the mutation
     try {
-      await createRequestCollect({ userId, newRequestData }).unwrap();
-      // Handle successful submission (e.g., show success message)
+      await createRequestCollect({
+        userId: user._id,
+        data: { binId, message }
+      }).unwrap();
       console.log('Request created successfully');
-      // Clear form fields after submission
       setBinId('');
       setMessage('');
     } catch (err) {
-      // Handle error (e.g., show error message)
       console.error('Error creating request:', err);
     }
   };
@@ -52,48 +42,46 @@ const RequestsComponent: React.FC<{ userId: string }> = ({ userId }) => {
   return (
     <div className="p-5 bg-green-100 dark:bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-lg font-bold mb-4">Create Garbage Collection Request</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="binId" className="block mb-2">Bin ID:</label>
-          <input
-            type="text"
-            id="binId"
-            value={binId}
-            onChange={(e) => setBinId(e.target.value)}
-            required
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="status" className="block mb-2">Status:</label>
-          <select
-            id="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as 'pending' | 'collected' | 'cancelled')}
-            className="border rounded-lg p-2 w-full"
-          >
-            <option value="pending">Pending</option>
-            <option value="collected">Collected</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="message" className="block mb-2">Message (optional):</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <button type="submit" disabled={isLoading} className="bg-blue-500 text-white rounded-lg py-2 px-4">
-          {isLoading ? 'Submitting...' : 'Submit Request'}
-        </button>
-        {error && <p className="text-red-500 mt-2">Error: {error.message}</p>} {/* Display error message */}
-      </form>
+
+      {binsLoading && <p>Loading bins...</p>}
+      {binsError && <p className="text-red-500">Error fetching bins: {JSON.stringify(binsError)}</p>}
+
+      {binsData && (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="binId" className="block mb-2">Select Bin:</label>
+            <select
+              id="binId"
+              value={binId}
+              onChange={(e) => setBinId(e.target.value)}
+              className="border rounded-lg p-2 w-full"
+              required
+            >
+              <option value="" disabled>Select a bin</option>
+              {binsData.bins.map((bin: { _id: string; Location: string; size: string; level: string }) => (
+                <option key={bin._id} value={bin._id}>
+                  Location: {bin.Location} | Size: {bin.size} | Level: {bin.level}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="message" className="block mb-2">Message (optional):</label>
+            <textarea
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="border rounded-lg p-2 w-full"
+            />
+          </div>
+          <button type="submit" disabled={isLoading} className="bg-blue-500 text-white rounded-lg py-2 px-4">
+            {isLoading ? 'Submitting...' : 'Submit Request'}
+          </button>
+          {error && <p className="text-red-500 mt-2">Error: {JSON.stringify(error)}</p>}
+        </form>
+      )}
     </div>
   );
 };
 
 export default RequestsComponent;
-

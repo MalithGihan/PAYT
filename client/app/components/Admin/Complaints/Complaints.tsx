@@ -106,7 +106,9 @@ const Complaints = () => {
 
 
       <ul className="space-y-4">
-        {filteredComplaints && filteredComplaints.map((complaint) => (
+        {filteredComplaints && filteredComplaints
+         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) 
+         .map((complaint) => (
           <li
             key={complaint._id}
             className="px-3 py-2 rounded-lg hover:bg-gray-100 bg-white transition duration-200 cursor-pointer flex flex-row justify-between shadow-lg mb-5 dark:bg-gray-800"

@@ -25,7 +25,7 @@ const ComplaintsCreate = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <textarea
-            className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500 resize-none"
+            className="w-full px-3 py-2 text-black bg-white border rounded-lg focus:outline-none focus:border-blue-500 resize-none"
             rows={4}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -35,11 +35,10 @@ const ComplaintsCreate = () => {
         </div>
         <button
           type="submit"
-          className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition duration-300 ${
-            isLoading
+          className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition duration-300 ${isLoading
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
-          }`}
+              : 'bg-green-600 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-opacity-50'
+            }`}
           disabled={isLoading}
         >
           {isLoading ? 'Submitting...' : 'Submit Complaint'}

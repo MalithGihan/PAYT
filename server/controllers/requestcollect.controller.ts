@@ -5,8 +5,8 @@ import ErrorHandler from "../utils/ErrorHandler";
 
 // Create a new request
 export const createRequestController = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-  const { message, binId,userId } = req.body;  
-
+  const { binId , message } = req.body;  
+  const userId = req.user?._id as string;
   const newRequest = await RequestCollectModel.create({ userId, binId, message });
   
   res.status(201).json({

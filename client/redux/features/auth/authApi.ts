@@ -1,6 +1,6 @@
 import { apiSlice } from "../api/apiSlice";
 import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
-
+import toast from 'react-hot-toast'
 //Artical Quary
 
 type RegistrationResponse = {
@@ -47,30 +47,10 @@ type BinStatusReportResponse = {
   totalChanges: number;
 };
 
-
-// Define the RequestCollect type based on the schema
-type RequestCollect = {
-  _id: string;
-  userId: string;
-  driverId?: string;  // Optional field
+type CreateRequestData = {
   binId: string;
-  status: 'pending' | 'collected' | 'cancelled';
-  message?: string;  // Optional field
-  createdAt: string;
-  updatedAt: string;
+  message: string;
 };
-
-// Define the response types for CRUD operations
-type RequestCollectResponse = {
-  success: boolean;
-  request: RequestCollect;
-};
-
-type RequestCollectListResponse = {
-  success: boolean;
-  requests: RequestCollect[];
-};
-
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -89,7 +69,7 @@ export const authApi = apiSlice.injectEndpoints({
               token: result.data.activationToken,
             })
           );
-          
+
         } catch (error: any) {
           console.log(error);
         }
@@ -306,7 +286,7 @@ export const authApi = apiSlice.injectEndpoints({
           console.log('Bin status report:', data);
         } catch (error) {
           console.error('Error fetching bin status report:', error);
-          
+
         }
       },
     }),
@@ -334,66 +314,52 @@ export const authApi = apiSlice.injectEndpoints({
     }),
     createComplaint: builder.mutation<{ success: boolean; complaint: any }, { message: string }>({
       query: (data) => ({
-        url: '/create-compl', 
+        url: '/create-compl',
         method: 'POST',
-        body: data, 
-        credentials: "include", 
+        body: data,
+        credentials: "include",
       }),
-      invalidatesTags: ['Complaint'], 
+      invalidatesTags: ['Complaint'],
     }),
     getComplaints: builder.query({
       query: (userId: string) => ({
-        url: `/get-compls/${userId}`, 
+        url: `/get-compls/${userId}`,
         method: 'GET',
       }),
     }),
 
-    //Garbage collecting requests
-   
-    // CREATE: Create a new request (POST /rc/:userId)
-    createRequestCollect: builder.mutation<RequestCollectResponse, { userId: string, newRequestData: Partial<RequestCollect> }>({
-      query: ({ userId, newRequestData }) => ({
+    createRequest: builder.mutation<{ success: boolean; request: Request }, { userId: string; data: CreateRequestData }>({
+      query: ({ userId, data }) => ({
         url: `/rc/${userId}`,
         method: 'POST',
-        body: newRequestData,
+        body: data,
+        credentials: "include" as const,
       }),
-    }),
 
-    // READ: Get all requests (GET /rc)
-    getRequestsCollect: builder.query<RequestCollectListResponse, void>({
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          toast.success("Request created successfully!");
+        } catch (error) {
+          console.error('Error creating request:', error);
+          toast.error("Failed to create request.");
+        }
+      },
+    }),
+    fetchCollectRequests: builder.query({
       query: () => ({
         url: '/rc',
         method: 'GET',
       }),
     }),
-
-    // UPDATE: Update a request (PUT /rc/:requestId)
-    updateRequestCollect: builder.mutation<RequestCollectResponse, { requestId: string, updatedRequestData: Partial<RequestCollect> }>({
-      query: ({ requestId, updatedRequestData }) => ({
-        url: `/rc/${requestId}`,
+    modifyRequest: builder.mutation({
+      query: ({ requestId, updates }) => ({
+        url: `/rc/${requestId}`, 
         method: 'PUT',
-        body: updatedRequestData,
+        body: updates,
       }),
     }),
 
-    // DELETE: Delete a request (DELETE /rc/:requestId)
-    deleteRequestCollect: builder.mutation<{ success: boolean }, string>({
-      query: (requestId) => ({
-        url: `/rc/${requestId}`,
-        method: 'DELETE',
-      }),
-    }),
-
-
-    // Get bins for the logged-in user
-    getUserBins: builder.query({
-      query: (userId) => ({
-        url: `/get-bins/${userId}`,
-        method: 'GET',
-      }),
-      // Optionally, you can add tags for cache invalidation if needed
-    }),
-    
   }),
 });
 
@@ -417,13 +383,11 @@ export const {
   useGetBinStatusReportQuery,
   useGetAllComplaintsQuery,
   useUpdateComplaintMutation,
-  useCreateComplaintMutation ,
+  useCreateComplaintMutation,
   useGetComplaintsQuery,
- 
-  //Collecting request api (frontend)
-  useCreateRequestCollectMutation,
-  useGetRequestsCollectQuery,
-  useUpdateRequestCollectMutation,
-  useDeleteRequestCollectMutation,
-  useGetUserBinsQuery
+
+  useCreateRequestMutation,
+  useFetchCollectRequestsQuery,
+  useModifyRequestMutation 
+  
 } = authApi;

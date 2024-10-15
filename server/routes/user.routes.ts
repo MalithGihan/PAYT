@@ -82,9 +82,9 @@ userRouter.put("/update-req/:requestId",
 userRouter.delete("/del-req/:requestId", isAuthenticated, deleteRequest);
 
 userRouter.post("/create-compl", isAuthenticated, createComplaint);
-userRouter.get("/get-compls/:userId", 
-  // isAuthenticated,
-   getComplaints);
+userRouter.get("/get-compls/:userId",
+  // isAuthenticated, // Ensure authentication middleware is in place
+  getComplaints);
 userRouter.get("/get-All-compls", isAuthenticated, getAllComplaints);
 userRouter.put("/update-compl/:complaintId",
   // isAuthenticated,
@@ -108,9 +108,13 @@ userRouter.delete("/del-bin/:binId",
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
 
-userRouter.post('/rc/:userId', createRequestController);
-userRouter.get('/rc', isAuthenticated, getRequestsController);
-userRouter.put('/rc/:requestId', isAuthenticated, updateRequestController);
+userRouter.post('/rc/:userId',isAuthenticated, createRequestController);
+userRouter.get('/rc', 
+  // isAuthenticated,
+   getRequestsController);
+userRouter.put('/rc/:requestId', 
+  // isAuthenticated, 
+  updateRequestController);
 userRouter.delete('/rc/:requestId', isAuthenticated, deleteRequestController);
 
 
