@@ -35,10 +35,11 @@ import {
   updateBin,
   deleteBin,
   updateBinStatus,
-  getBinStatusReport
+  getBinStatusReport,
+  getAllBinsStatusReport
 } from "../controllers/bin.controller";
 
-import {createRequestController,getRequestsController,updateRequestController,deleteRequestController} from '../controllers/requestcollect.controller'
+import { createRequestController, getRequestsController, updateRequestController, deleteRequestController } from '../controllers/requestcollect.controller'
 
 const userRouter = express.Router();
 
@@ -107,12 +108,12 @@ userRouter.delete("/del-bin/:binId",
 
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
-
-userRouter.post('/rc/:userId',isAuthenticated, createRequestController);
-userRouter.get('/rc', 
+userRouter.post('/bins/status-report', isAuthenticated, getAllBinsStatusReport);
+userRouter.post('/rc/:userId', isAuthenticated, createRequestController);
+userRouter.get('/rc',
   // isAuthenticated,
-   getRequestsController);
-userRouter.put('/rc/:requestId', 
+  getRequestsController);
+userRouter.put('/rc/:requestId',
   // isAuthenticated, 
   updateRequestController);
 userRouter.delete('/rc/:requestId', isAuthenticated, deleteRequestController);

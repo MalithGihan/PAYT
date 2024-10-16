@@ -382,6 +382,28 @@ export const authApi = apiSlice.injectEndpoints({
         body: updates,
       }),
     }),
+    getAllBinsStatusReport: builder.query<{
+      totalTrueCount: number;
+      totalFalseCount: number;
+      totalChanges: number;
+      totalBins: number;
+    }, { startDate: string; endDate: string }>({
+      query: ({ startDate, endDate }) => ({
+        url: `/bins/status-report`,
+        method: 'POST',
+        body: { startDate, endDate },
+        credentials: "include" as const,
+      }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log('All bins status report:', data);
+        } catch (error) {
+          console.error('Error fetching all bins status report:', error);
+          toast.error("Failed to fetch all bins status report.");
+        }
+      },
+    }),
 
   }),
 });
@@ -412,5 +434,8 @@ export const {
 
   useCreateRequestMutation,
   useFetchCollectRequestsQuery,
-  useModifyRequestMutation
+  useModifyRequestMutation,
+
+  useGetAllBinsStatusReportQuery
+
 } = authApi;
