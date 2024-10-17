@@ -3,6 +3,7 @@ import ComplaintModel from "../models/complaint.model";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import ErrorHandler from "../utils/ErrorHandler";
 
+// create garbage collection request
 export const createComplaint = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const { message } = req.body;
   const userId = req.user?._id as string;
@@ -14,6 +15,7 @@ export const createComplaint = CatchAsyncError(async (req: Request, res: Respons
   });
 });
 
+// get garbage collection request
 export const getComplaints = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.params.userId;
   const complaints = await ComplaintModel.find({ userId });
@@ -23,6 +25,8 @@ export const getComplaints = CatchAsyncError(async (req: Request, res: Response,
     complaints,
   });
 });
+
+// get all garbage collection request
 export const getAllComplaints = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
 
   const complaints = await ComplaintModel.find({}).populate('userId', 'name role');
@@ -33,6 +37,7 @@ export const getAllComplaints = CatchAsyncError(async (req: Request, res: Respon
   });
 });
 
+// update garbage collection request
 export const updateComplaint = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const { complaintId } = req.params;
   const updates = req.body;
@@ -49,6 +54,7 @@ export const updateComplaint = CatchAsyncError(async (req: Request, res: Respons
   });
 });
 
+// delete garbage collection request
 export const deleteComplaint = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
   const { complaintId } = req.params;
 
