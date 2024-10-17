@@ -16,7 +16,7 @@ import { redis } from "../utils/redis";
 import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service";
 import cloudinary from "cloudinary";
 
-interface IRegistrationBody {
+interface IRegistrationBody { // interface to register user attributes
   name: string;
   email: string;
   password: string;
@@ -26,7 +26,8 @@ interface IRegistrationBody {
   postalNumber: number;
 }
 
-export const registrationUser = CatchAsyncError(
+// user register
+export const registrationUser = CatchAsyncError(   
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, email, password,homeOwnerName,address,postalNumber } = req.body;
@@ -84,6 +85,7 @@ interface IActivationToken {
   activationCode: string;
 }
 
+//create user/signup
 export const createActivationToken = (user: any): IActivationToken => {
   const activationCode = Math.floor(100 + Math.random() * 9000).toString();
   const token = jwt.sign(
@@ -105,6 +107,7 @@ interface IActivationrRequest {
   activation_code: string;
 }
 
+//active user
 export const activationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -151,6 +154,7 @@ interface ILoginRequest {
   password: string;
 }
 
+//login user
 export const loginUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -178,6 +182,7 @@ export const loginUser = CatchAsyncError(
   }
 );
 
+//login user
 export const logoutUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -197,6 +202,7 @@ export const logoutUser = CatchAsyncError(
   }
 );
 
+//update user info
 export const updateAccessToken = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -253,6 +259,7 @@ export const updateAccessToken = CatchAsyncError(
   }
 );
 
+//get user details
 export const getUserInof = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -271,6 +278,7 @@ interface ISocialAuthBody {
   address: string;
 }
 
+// social auth 
 export const socialAuth = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -297,6 +305,7 @@ interface IUpdateUserInfo {
   postalNumber: number;
 }
 
+// update user inof
 export const updateUserInfo = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -341,6 +350,7 @@ interface IUpdatePassword {
   newPassword: string;
 }
 
+// update user password
 export const updatePassword = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -382,6 +392,7 @@ interface IUpdateProfilePicture {
   avatar: string;
 }
 
+//update user profile picture
 export const updateProfilePicture = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -431,7 +442,7 @@ export const updateProfilePicture = CatchAsyncError(
   }
 );
 
-
+// get all users
 export const getAllUsers = CatchAsyncError(async(req: Request, res: Response, next: NextFunction) => {
   try {
     getAllUsersService(res)
@@ -440,7 +451,7 @@ export const getAllUsers = CatchAsyncError(async(req: Request, res: Response, ne
   }
 })
 
-
+/// update user role
 export const updateUserRole = CatchAsyncError(async(req: Request, res: Response, next: NextFunction) => {
    try {
      const {id,role}= req.body
@@ -450,6 +461,7 @@ export const updateUserRole = CatchAsyncError(async(req: Request, res: Response,
    }
 })
 
+// delete user 
 export const deleteUser = CatchAsyncError(async(req: Request, res: Response, next: NextFunction) => {
     try {
       
