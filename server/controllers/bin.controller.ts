@@ -137,3 +137,38 @@ export const getBinStatusReport = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error generating bin status report', error });
     }
 };
+
+export const getAllBinsStatusReport = async (req: Request, res: Response) => {
+    try {
+        const { startDate, endDate } = req.body;
+
+        const start = new Date(startDate as string);
+        const end = new Date(endDate as string);
+
+        const bins = await BinModel.find();
+        if (!bins || bins.length === 0) {
+            return res.status(404).json({ message: 'No bins found' });
+        }
+
+        let totalTrueCount = 0;
+        let totalFalseCount = 0;
+
+        for (const bin of bins) {
+            const filteredHistory = bin.collectionHistory.filter(
+                (entry) => entry.timestamp >= start && entry.timestamp <= end
+            );
+
+            totalTrueCount += filteredHistory.filter((entry) => entry.status).length;
+            totalFalseCount += filteredHistory.filter((entry) => !entry.status).length;
+        }
+
+        res.status(200).json({
+            totalTrueCount,
+            totalFalseCount,
+            totalChanges: totalTrueCount + totalFalseCount,
+            totalBins: bins.length 
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error generating total bin status report', error });
+    }
+};

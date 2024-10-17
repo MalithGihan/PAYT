@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   useGetUsersQuery,
   useCreateBinMutation,
@@ -13,19 +13,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   TextField,
 } from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { styles } from "../../../../app/styles/style";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Chart as Tooltip, Legend } from "chart.js";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const Analytic = () => {
   const {
@@ -57,6 +51,8 @@ const Analytic = () => {
     endDate: "",
   });
 
+  const chartRef = useRef<HTMLDivElement>(null);
+
   const {
     data: binsData,
     error: binsError,
@@ -65,19 +61,6 @@ const Analytic = () => {
   } = useGetBinsByIdQuery(selectedUserId || "", {
     skip: !selectedUserId,
   });
-
-  // const { data: binStatusReport, isLoading: isReportLoading } = useGetBinStatusReportQuery({
-  //   binId: selectedBinId,
-  //   startDate: reportDateRange.startDate,
-  //   endDate: reportDateRange.endDate
-  // }, {
-  //   skip: !selectedBinId || !reportDateRange.startDate || !reportDateRange.endDate,
-  // });
-
-  // const formattedReportData = binStatusReport?.changesByDate?.map(item => ({
-  //   date: item.date,
-  //   collectedCount: item.trueCount
-  // })) || [];
 
   const { data: binStatusReport, isLoading: isReportLoading } =
     useGetBinStatusReportQuery(
@@ -205,7 +188,101 @@ const Analytic = () => {
   if (usersError) {
     return <div>Error fetching users</div>;
   }
+  const generateReport = async () => {
+    if (!selectedBinId || !reportDateRange.startDate || !reportDateRange.endDate || !chartRef.current) {
+      alert("Please select a bin and date range to generate a report.");
+      return;
+    }
+    const reportTitle = "PAYT";
+    const reportSubtitle = "Monthly Report";
+    const binLocation = binsData?.bins.find(bin => bin._id === selectedBinId)?.location || "N/A";
+    const totalCollectedRounds = binStatusReport?.falseCount || 0;
+    const startdate = reportDateRange.startDate;
+    const enddate = reportDateRange.endDate;
+    const reportContent = document.createElement('div');
+    reportContent.innerHTML = `
+    <div id="report-container" style="
+      font-family: 'Arial', sans-serif; 
+      padding: 20px; 
+      background-color: #f9f9f9; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+      border-radius: 8px;
+      max-width: 800px; 
+      margin: 0 auto; 
+      text-align: center;
+    ">
+      <h1 style="
+        color: #333; 
+        font-size: 32px; 
+        font-weight: bold; 
+        margin-bottom: 10px;
+      ">
+        ${reportTitle}
+      </h1>
+      <h2 style="
+        color: #666; 
+        font-size: 24px; 
+        font-weight: normal; 
+        margin-bottom: 5px;
+      ">
+        ${reportSubtitle}
+      </h2>
+      
+      <div style="
+        color: #777; 
+        font-size: 16px; 
+        margin-bottom: 15px;
+      ">
+        <p><strong>From:</strong> ${startdate} - ${enddate}</p>
+        <p><strong>Bin Location:</strong> ${binLocation}</p>
+        <p><strong>Collected Time:</strong> ${totalCollectedRounds}</p>
+      </div>
+  
+      <hr style="
+        margin: 20px 0; 
+        border: 0; 
+        border-top: 1px solid #eaeaea;
+      ">
+  
+      <div id="chart-container" style="
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        padding: 20px; 
+        background-color: #fff; 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+        border-radius: 8px;
+      ">
+        <!-- Chart will be inserted here -->
+      </div>
+    </div>
+  `;
+    document.body.appendChild(reportContent);
 
+    try {
+      const chartCanvas = await html2canvas(chartRef.current);
+      const chartContainer = document.getElementById('chart-container');
+      if (chartContainer) {
+        chartContainer.appendChild(chartCanvas);
+      }
+      const canvas = await html2canvas(document.getElementById('report-container') as HTMLElement);
+      const pdf = new jsPDF();
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+      pdf.save(`${reportTitle}_Report.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('An error occurred while generating the PDF. Please try again.');
+    } finally {
+      document.body.removeChild(reportContent);
+    }
+  };
+  const chartData = [
+    {
+      name: 'Collected Times',
+      count: binStatusReport?.falseCount || 0,
+    }
+  ];
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[100vh]">
       <div className="flex flex-row justify-start gap-6 mb-4">
@@ -404,12 +481,12 @@ const Analytic = () => {
         maxWidth="sm"
         fullWidth
       >
-        
+
         <h2 className="text-xl font-bold text-black mt-4 ml-4">Edit Bin</h2>
         <DialogContent className="mt-4">
-          
+
           <label className={`${styles.label}`} htmlFor="email">
-          New Location
+            New Location
           </label>
           <input
             type={"text"}
@@ -423,7 +500,7 @@ const Analytic = () => {
           />
 
           <label className={`${styles.label}`} htmlFor="email">
-          New Size
+            New Size
           </label>
           <input
             type={"text"}
@@ -437,7 +514,7 @@ const Analytic = () => {
           />
         </DialogContent>
         <DialogActions className="p-4">
-          
+
           <input
             value="Update Bin"
             type="button"
@@ -460,14 +537,14 @@ const Analytic = () => {
         fullWidth
       >
         <h2 className="text-xl font-bold text-black mt-4 ml-4"> Confirm Delete</h2>
-        
+
         <DialogContent className="mt-4">
           <p className="text-gray-700">
             Are you sure you want to delete this bin?
           </p>
         </DialogContent>
         <DialogActions className="p-4">
-        
+
           <input
             value="Delete"
             type="button"
@@ -489,107 +566,66 @@ const Analytic = () => {
         maxWidth="md"
         fullWidth
       >
-         <h2 className="text-xl font-bold text-black mt-4 ml-4">Monthly Bin Collection Report</h2>
-        
-        <DialogContent className="bg-white p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <TextField
-              label="Start Date"
-              type="date"
-              value={reportDateRange.startDate}
-              onChange={(e) =>
-                setReportDateRange({
-                  ...reportDateRange,
-                  startDate: e.target.value,
-                })
-              }
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              className="bg-gray-100"
-            />
-            <TextField
-              label="End Date"
-              type="date"
-              value={reportDateRange.endDate}
-              onChange={(e) =>
-                setReportDateRange({
-                  ...reportDateRange,
-                  endDate: e.target.value,
-                })
-              }
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              className="bg-gray-100"
-            />
-          </div>
-          {isReportLoading ? (
-            <p className="text-center py-4 text-gray-600">Loading report...</p>
-          ) : binStatusReport ? (
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-blue-100 p-4 rounded-lg text-center">
-                  <p className="text-lg font-semibold text-blue-800">
-                    Total Changes
-                  </p>
-                  <p className="text-3xl font-bold text-blue-900">
-                    {binStatusReport.totalChanges}
-                  </p>
-                </div>
-                <div className="bg-green-100 p-4 rounded-lg text-center">
-                  <p className="text-lg font-semibold text-green-800">
-                    Total Collected
-                  </p>
-                  <p className="text-3xl font-bold text-green-900">
-                    {binStatusReport.trueCount}
-                  </p>
-                </div>
-                <div className="bg-red-100 p-4 rounded-lg text-center">
-                  <p className="text-lg font-semibold text-red-800">
-                    Total Not Collected
-                  </p>
-                  <p className="text-3xl font-bold text-red-900">
-                    {binStatusReport.falseCount}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">
-                  Monthly Collection Trend
-                </h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={monthWiseReportData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="monthYear"
-                      label={{
-                        value: "Month",
-                        position: "insideBottom",
-                        offset: -5,
-                      }}
-                    />
-                    <YAxis
-                      label={{
-                        value: "Collected Count",
-                        angle: -90,
-                        position: "insideLeft",
-                      }}
-                    />
-                    <Tooltip />
-                    <Bar dataKey="collectedCount" fill="#4299E1" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+        <h2 className="text-xl font-bold text-black mt-4 ml-4">Monthly Bin Collection Report</h2>
+        <DialogContent>
+          <h2 className="text-xl font-bold text-black mt-4 ml-4">Monthly Bin Collection Report</h2>
+          <div className="bg-white p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <TextField
+                label="Start Date"
+                type="date"
+                value={reportDateRange.startDate}
+                onChange={(e) => setReportDateRange({ ...reportDateRange, startDate: e.target.value })}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+                className="bg-gray-100"
+              />
+              <TextField
+                label="End Date"
+                type="date"
+                value={reportDateRange.endDate}
+                onChange={(e) => setReportDateRange({ ...reportDateRange, endDate: e.target.value })}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{ shrink: true }}
+                className="bg-gray-100"
+              />
             </div>
-          ) : (
-            <p className="text-center py-4 text-gray-600">
-              No report data available
-            </p>
-          )}
+            {isReportLoading ? (
+              <p className="text-center py-4 text-gray-600">Loading report...</p>
+            ) : binStatusReport ? (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-red-100 p-4 rounded-lg text-center">
+                    <p className="text-lg font-semibold text-red-800">Total Collected Rounds</p>
+                    <p className="text-3xl font-bold text-red-900">{binStatusReport.falseCount}</p>
+                  </div>
+                </div>
+                <div className="mt-6" ref={chartRef}>
+                  <BarChart width={500} height={300} data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="count" fill="#8884d8" />
+                  </BarChart>
+                </div>
+              </div>
+            ) : (
+              <p className="text-center py-4 text-gray-600">No report data available</p>
+            )}
+          </div>
         </DialogContent>
         <DialogActions className="p-4">
-        
+          <input
+            value=" Generate PDF Report"
+            type="button"
+            onClick={generateReport}
+            disabled={!binStatusReport}
+            className="bg-blue-500 hover:bg-blue-700 text-white dark:text-white font-bold text-xs self-baseline py-2 px-2 rounded-md shadow-sm transition duration-150 ease-in-out"
+          />
           <input
             value="Cancel"
             type="button"
