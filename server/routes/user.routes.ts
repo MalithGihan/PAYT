@@ -43,16 +43,16 @@ import { createRequestController, getRequestsController, updateRequestController
 
 const userRouter = express.Router();
 
-userRouter.post("/registration", registrationUser);
-userRouter.post("/activate-user", activationUser);
-userRouter.post("/login", loginUser);
-userRouter.get("/logout", isAuthenticated, logoutUser);
-userRouter.get("/refresh", updateAccessToken);
-userRouter.get("/me", isAuthenticated, getUserInof);
-userRouter.post("/social-auth", socialAuth);
-userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);
-userRouter.put("/update-user-password", isAuthenticated, updatePassword);
-userRouter.put("/update-user-avatar", isAuthenticated, updateProfilePicture);
+userRouter.post("/registration", registrationUser); // user signup backend link
+userRouter.post("/activate-user", activationUser); // user active user backend link
+userRouter.post("/login", loginUser);  // user login backend link
+userRouter.get("/logout", isAuthenticated, logoutUser); // user logout backend link
+userRouter.get("/refresh", updateAccessToken); // user refresh backend link
+userRouter.get("/me", isAuthenticated, getUserInof); // user online backend link
+userRouter.post("/social-auth", socialAuth); // user login backend link
+userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);  // user getting user information backend link
+userRouter.put("/update-user-password", isAuthenticated, updatePassword);  // user update password backend link
+userRouter.put("/update-user-avatar", isAuthenticated, updateProfilePicture); // user change avatar backend link
 userRouter.get(
   "/get-users",
   isAuthenticated,
@@ -106,11 +106,19 @@ userRouter.delete("/del-bin/:binId",
   // isAuthenticated, 
   deleteBin);
 
+
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
 userRouter.post('/bins/status-report', isAuthenticated, getAllBinsStatusReport);
 userRouter.post('/rc/:userId', isAuthenticated, createRequestController);
-userRouter.get('/rc',
+
+
+//userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
+//userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
+
+userRouter.post('/rc/:userId',isAuthenticated, createRequestController);
+userRouter.get('/rc', 
+
   // isAuthenticated,
   getRequestsController);
 userRouter.put('/rc/:requestId',
