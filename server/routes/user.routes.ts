@@ -92,23 +92,27 @@ userRouter.put("/update-compl/:complaintId",
   updateComplaint);
 userRouter.delete("/del-compl/:complaintId", isAuthenticated, deleteComplaint);
 
-
+//create Bin
 userRouter.post("/create-bin",
   // isAuthenticated, 
   createBin);
+//Get Bins
 userRouter.get("/get-bins", isAuthenticated, getBins);
+//Get bins By userId
 userRouter.get("/get-bins/:userId", isAuthenticated, getBinsbyid);
-
+//Update bin Bu UserId
 userRouter.put("/update-bin/:binId",
   //  isAuthenticated,
   updateBin);
+//Delete Bin By UserID
 userRouter.delete("/del-bin/:binId",
   // isAuthenticated, 
   deleteBin);
-
-
+//Update status By binId
 userRouter.put('/bins/:binId/status', isAuthenticated, updateBinStatus);
+//Get Report By BinId
 userRouter.get('/bins/:binId/status-report', isAuthenticated, getBinStatusReport);
+//Get Report for all
 userRouter.post('/bins/status-report', isAuthenticated, getAllBinsStatusReport);
 userRouter.post('/rc/:userId', isAuthenticated, createRequestController);
 
