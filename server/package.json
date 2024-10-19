@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "dev": "ts-node-dev --respawn --transpile-only server.ts",
-    "test:bins": "jest bin.controller.test.ts --verbose"
+    "test:bins": "jest bin.controller.test.ts --verbose",
+    "test:req": "jest requestCollection.test.ts --verbose"
+
   },
   "author": "\"Malith Gihan\"",
   "license": "ISC",
